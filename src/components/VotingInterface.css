@@ -1,0 +1,893 @@
+/* VotingInterface.css */
+.voting-interface {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  scroll-behavior: smooth;
+  width: 100%;
+}
+
+.voting-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.voting-header h2 {
+  color: #1976d2;
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.voting-header p {
+  color: #666;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.voting-sections {
+  display: grid;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.voting-section {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 2px solid #e3f2fd;
+  animation: fadeInSlide 0.5s ease-out;
+  width: 100%;
+  max-width: none;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  color: #1976d2;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.candidates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  scroll-margin-top: 2rem;
+  max-width: 100%;
+  width: 100%;
+  justify-items: stretch;
+}
+
+.candidate-card {
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 15px;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.candidate-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.candidate-card.selected {
+  border-color: #1976d2;
+  background: linear-gradient(135deg, #e3f2fd, #f8f9fa);
+  box-shadow: 0 8px 25px rgba(25, 118, 210, 0.2);
+}
+
+.candidate-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: #1976d2;
+  color: white;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.candidate-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  background: linear-gradient(135deg, #1976d2, #42a5f5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.candidate-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.candidate-grade {
+  color: #666;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.selection-summary {
+  background: #e8f5e8;
+  border: 2px solid #4caf50;
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.selection-summary h3 {
+  color: #2e7d32;
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+}
+
+.selection-item {
+  background: white;
+  padding: 1rem;
+  border-radius: 10px;
+  margin: 0.5rem 0;
+  border: 1px solid #c8e6c9;
+}
+
+.selection-item strong {
+  color: #2e7d32;
+}
+
+.voting-actions {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  min-height: 80px;
+  scroll-margin-top: 1rem;
+  scroll-margin-bottom: 1rem;
+}
+
+.vote-button, .cancel-button, .next-button, .back-button, .submit-button {
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 140px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.next-button {
+  background: linear-gradient(135deg, #2196f3, #42a5f5);
+  color: white;
+}
+
+.next-button:hover {
+  background: linear-gradient(135deg, #1976d2, #2196f3);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+}
+
+.next-button:disabled {
+  background: linear-gradient(135deg, #bdbdbd, #e0e0e0);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #666;
+}
+
+.back-button {
+  background: linear-gradient(135deg, #ff9800, #ffb74d) !important;
+  color: white !important;
+  border: 3px solid #f57c00 !important;
+  position: relative;
+  z-index: 10;
+  font-weight: 800 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.3) !important;
+  font-size: 1.1rem !important;
+  min-width: 180px !important;
+  padding: 1.2rem 2.5rem !important;
+}
+
+.back-button:hover {
+  background: linear-gradient(135deg, #f57c00, #ff9800) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(255, 152, 0, 0.5) !important;
+  border-color: #ef6c00 !important;
+  animation: none;
+  font-size: 1.15rem !important;
+  color: white !important;
+}
+
+.back-button:focus {
+  outline: 3px solid rgba(255, 152, 0, 0.5) !important;
+  outline-offset: 3px;
+  color: white !important;
+}
+
+.back-button:active {
+  transform: translateY(1px) !important;
+  transition: transform 0.1s ease;
+  color: white !important;
+}
+
+.submit-button {
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  color: white;
+  font-size: 1.2rem;
+  padding: 1.2rem 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-button:hover {
+  background: linear-gradient(135deg, #388e3c, #4caf50);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+}
+
+.submit-button:disabled {
+  background: linear-gradient(135deg, #bdbdbd, #e0e0e0);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #666;
+}
+
+.submit-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.submit-button:hover::before {
+  left: 100%;
+}
+
+.vote-button {
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  color: white;
+}
+
+.vote-button:hover {
+  background: linear-gradient(135deg, #388e3c, #4caf50);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+}
+
+.vote-button:disabled {
+  background: linear-gradient(135deg, #bdbdbd, #e0e0e0);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #666;
+}
+
+.cancel-button {
+  background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+  color: #666;
+  border: 2px solid #ddd;
+}
+
+.cancel-button:hover {
+  background: linear-gradient(135deg, #ffebee, #ffcdd2);
+  border-color: #f44336;
+  color: #f44336;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(244, 67, 54, 0.2);
+}
+
+.secure-exit-button {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 140px;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.secure-exit-button:hover {
+  background: linear-gradient(135deg, #ff5252, #d32f2f);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
+}
+
+.secure-exit-button:active {
+  transform: translateY(1px);
+}
+
+.secure-exit-button::before {
+  content: '🔒';
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+  margin-right: 0.3rem;
+}
+
+.secure-exit-button:hover::before {
+  transform: rotate(15deg);
+}
+
+.requirement-note {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+  text-align: center;
+  color: #856404;
+  font-weight: 500;
+}
+
+/* Button Loading Animation */
+.submit-button.loading {
+  position: relative;
+  color: transparent;
+}
+
+.submit-button.loading::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  margin-left: -10px;
+  margin-top: -10px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: button-loading 1s ease infinite;
+}
+
+@keyframes button-loading {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Button Press Effect */
+.vote-button:active,
+.cancel-button:active,
+.next-button:active,
+.back-button:active,
+.submit-button:active {
+  transform: translateY(1px) !important;
+  transition: transform 0.1s ease;
+}
+
+/* Icon Animations */
+.next-button::after {
+  content: '→';
+  margin-left: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.next-button:hover::after {
+  transform: translateX(3px);
+}
+
+.back-button::before {
+  content: '';
+  margin-right: 0;
+  transition: transform 0.3s ease;
+}
+
+.back-button:hover::before {
+  transform: translateX(-3px);
+}
+
+/* Enhanced Back Button Animation */
+.back-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.back-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.6s;
+}
+
+.back-button:hover::after {
+  left: 100%;
+}
+
+.submit-button::after {
+  content: '✓';
+  margin-left: 0.5rem;
+  font-size: 1.3rem;
+  transition: transform 0.3s ease;
+}
+
+.submit-button:hover::after {
+  transform: scale(1.2);
+}
+
+/* Back Button Pulse Animation for Better Visibility */
+@keyframes back-button-pulse {
+  0% { 
+    box-shadow: 0 6px 20px rgba(255, 152, 0, 0.3); 
+  }
+  50% { 
+    box-shadow: 0 8px 25px rgba(255, 152, 0, 0.5); 
+  }
+  100% { 
+    box-shadow: 0 6px 20px rgba(255, 152, 0, 0.3); 
+  }
+}
+
+.back-button {
+  animation: back-button-pulse 2s ease-in-out infinite;
+}
+
+.back-button:hover {
+  animation: none;
+}
+
+/* Enhanced Mobile and Tablet Styles */
+@media (max-width: 768px) {
+  .voting-interface {
+    padding: 1rem;
+  }
+  
+  .voting-header h2 {
+    font-size: 1.8rem;
+  }
+  
+  .candidates-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .voting-actions {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e0e0e0;
+  }
+  
+  .vote-button, 
+  .cancel-button,
+  .next-button,
+  .back-button,
+  .submit-button,
+  .secure-exit-button {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+    padding: 1.2rem 2rem;
+    font-size: 1rem;
+    margin: 0.5rem 0;
+  }
+    .back-button {
+    order: 2 !important;
+    background: linear-gradient(135deg, #ff9800, #ffa726) !important;
+    border: 3px solid #ff9800 !important;
+    font-size: 1.1rem !important;
+    font-weight: 800 !important;
+    box-shadow: 0 8px 25px rgba(255, 152, 0, 0.4) !important;
+    min-height: 60px !important;
+    color: white !important;
+    padding: 1.2rem 2rem !important;
+  }
+  
+  .submit-button {
+    order: 1;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  
+  .secure-exit-button {
+    order: 3;
+  }
+}
+
+@media (max-width: 480px) {
+  .vote-button, 
+  .cancel-button,
+  .next-button,
+  .back-button,
+  .submit-button,
+  .secure-exit-button {
+    padding: 1rem 1.5rem;
+    font-size: 0.9rem;
+    min-width: 120px;
+  }
+}
+
+/* Tablet Styles - 2 columns */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .candidates-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+  }
+  
+  .candidate-card {
+    padding: 1.2rem;
+  }
+}
+
+/* Desktop Styles - Auto-fit with better minimum */
+@media (min-width: 1025px) {
+  .candidates-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .candidate-card {
+    padding: 1.5rem;
+  }
+}
+
+/* Force Back Button Visibility Override */
+button.back-button,
+.voting-actions .back-button,
+.back-button.back-button {
+  background: linear-gradient(135deg, #ff9800, #ffb74d) !important;
+  color: white !important;
+  border: 3px solid #f57c00 !important;
+  font-weight: 800 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.3) !important;
+}
+
+button.back-button:hover,
+.voting-actions .back-button:hover,
+.back-button.back-button:hover {
+  background: linear-gradient(135deg, #f57c00, #ff9800) !important;
+  color: white !important;
+  border-color: #ef6c00 !important;
+  box-shadow: 0 10px 30px rgba(255, 152, 0, 0.5) !important;
+}
+
+.candidate-symbol-section {
+  margin-bottom: 1rem;
+}
+
+.symbol-info {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white !important;
+  padding: 8px 14px;
+  border-radius: 15px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+  display: inline-block;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.symbol-info * {
+  color: white !important;
+}
+
+.symbol-badge {
+  font-size: 1.2em;
+  margin-left: 8px;
+  background: rgba(255, 255, 255, 0.25);
+  color: white !important;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Enhanced symbol visibility for voting cards */
+.candidate-card .symbol-info {
+  background: linear-gradient(135deg, #1976d2, #42a5f5) !important;
+  color: white !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 3px 12px rgba(25, 118, 210, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  margin: 8px 0;
+  padding: 12px 18px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.candidate-card:hover .symbol-info {
+  background: linear-gradient(135deg, #1565c0, #1976d2) !important;
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.5);
+  transform: scale(1.03);
+}
+
+.candidate-card.selected .symbol-info {
+  background: linear-gradient(135deg, #0d47a1, #1565c0) !important;
+  box-shadow: 0 6px 20px rgba(25, 118, 210, 0.6);
+  transform: scale(1.05);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.candidate-card .symbol-badge {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #1976d2 !important;
+  font-weight: 900 !important;
+  font-size: 1.4em !important;
+  padding: 6px 12px !important;
+  border-radius: 15px !important;
+  text-shadow: none !important;
+  border: 2px solid rgba(255, 255, 255, 1);
+  margin-left: 10px;
+  transition: all 0.3s ease;
+}
+
+.candidate-card:hover .symbol-badge {
+  background: rgba(255, 255, 255, 1) !important;
+  color: #0d47a1 !important;
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.candidate-card.selected .symbol-badge {
+  background: rgba(255, 255, 255, 1) !important;
+  color: #0d47a1 !important;
+  font-weight: 900 !important;
+  transform: scale(1.15);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+}
+
+.symbol-label {
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-weight: 700 !important;
+  font-size: 0.95em !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  margin-right: 8px;
+  letter-spacing: 0.5px;
+}
+
+/* Alternative symbol display for better visibility */
+.candidate-card .symbol-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Make the entire symbol section more prominent */
+.candidate-symbol-section {
+  margin-bottom: 1rem;
+  padding: 15px;
+  background: linear-gradient(135deg, rgba(25, 118, 210, 0.05), rgba(66, 165, 245, 0.02));
+  border-radius: 12px;
+  border: 2px solid rgba(25, 118, 210, 0.15);
+  transition: all 0.3s ease;
+}
+
+.candidate-card:hover .candidate-symbol-section {
+  background: linear-gradient(135deg, rgba(25, 118, 210, 0.1), rgba(66, 165, 245, 0.05));
+  border-color: rgba(25, 118, 210, 0.25);
+  transform: scale(1.02);
+}
+
+.candidate-card.selected .candidate-symbol-section {
+  background: linear-gradient(135deg, rgba(25, 118, 210, 0.15), rgba(66, 165, 245, 0.08));
+  border-color: rgba(25, 118, 210, 0.35);
+  box-shadow: 0 4px 15px rgba(25, 118, 210, 0.2);
+}
+
+.candidate-symbol {
+  font-size: 3.5rem !important;
+  margin-bottom: 0.5rem;
+  color: #1976d2 !important;
+  text-shadow: 
+    0 2px 4px rgba(25, 118, 210, 0.3),
+    0 0 10px rgba(25, 118, 210, 0.2),
+    0 0 20px rgba(25, 118, 210, 0.1);
+  filter: drop-shadow(0 3px 6px rgba(25, 118, 210, 0.3));
+  background: linear-gradient(135deg, rgba(25, 118, 210, 0.1), rgba(66, 165, 245, 0.05));
+  border-radius: 15px;
+  padding: 15px;
+  border: 2px solid rgba(25, 118, 210, 0.2);
+  transition: all 0.3s ease;
+}
+
+/* Ensure candidate info text is visible */
+.candidate-info h3 {
+  color: #333 !important;
+  font-weight: 700;
+}
+
+.candidate-info .grade {
+  color: #666 !important;
+  font-weight: 500;
+}
+
+/* Auto-scroll highlight animation */
+@keyframes highlightActions {
+  0% {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.9);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(25, 118, 210, 0.3);
+    background: rgba(227, 242, 253, 0.95);
+  }
+  100% {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.9);
+  }
+}
+
+.voting-actions.highlight {
+  animation: highlightActions 1.5s ease-in-out;
+}
+
+/* Selection animation */
+@keyframes cardSelect {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.candidate-card.just-selected {
+  animation: cardSelect 0.3s ease-in-out;
+}
+
+/* Selection Toast Notification */
+.selection-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  transform: translateX(400px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  font-weight: 600;
+  min-width: 280px;
+}
+
+.selection-toast.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.toast-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.toast-text {
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+/* Scroll transition indicator */
+.scroll-indicator {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(25, 118, 210, 0.9);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 6px 20px rgba(25, 118, 210, 0.3);
+}
+
+.scroll-indicator.show {
+  opacity: 1;
+}
+
+.scroll-indicator .indicator-icon {
+  margin-right: 0.5rem;
+  font-size: 1.1rem;
+}
+
+/* Step transition animation */
+.voting-section {
+  animation: fadeInSlide 0.5s ease-out;
+}
+
+@keyframes fadeInSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Enhanced progress bar animations */
+.progress-bar .step.active {
+  animation: stepActivate 0.4s ease-out;
+}
+
+@keyframes stepActivate {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

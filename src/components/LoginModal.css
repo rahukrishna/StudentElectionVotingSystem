@@ -1,0 +1,548 @@
+/* LoginModal.css */
+.login-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: 2rem;
+}
+
+.login-container {
+  background: white;
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  border: 2px solid #e3f2fd;
+  position: relative;
+  overflow: visible;
+}
+
+/* Override for election completed state */
+.login-container.election-completed-container {
+  padding: 1rem;
+  border: 3px solid #28a745;
+  background: transparent;
+  box-shadow: 0 20px 40px rgba(40, 167, 69, 0.15);
+  max-width: 600px;
+}
+
+.login-container h2 {
+  color: #1976d2;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.login-container p {
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+}
+
+.login-button {
+  background: linear-gradient(135deg, #1976d2, #42a5f5);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.login-button:hover {
+  background: linear-gradient(135deg, #1565c0, #1976d2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(25, 118, 210, 0.3);
+}
+
+.login-button:active {
+  transform: translateY(0);
+}
+
+/* Highlight animation for Continue to Vote button */
+@keyframes highlightButton {
+  0% {
+    box-shadow: 0 8px 20px rgba(25, 118, 210, 0.3);
+    background: linear-gradient(135deg, #1976d2, #42a5f5);
+  }
+  50% {
+    box-shadow: 0 12px 30px rgba(25, 118, 210, 0.5);
+    background: linear-gradient(135deg, #42a5f5, #64b5f6);
+    transform: translateY(-4px) scale(1.02);
+  }
+  100% {
+    box-shadow: 0 8px 20px rgba(25, 118, 210, 0.3);
+    background: linear-gradient(135deg, #1976d2, #42a5f5);
+    transform: translateY(-2px);
+  }
+}
+
+.login-button.highlight-button {
+  animation: highlightButton 1.5s ease-in-out;
+}
+
+/* Secure Exit Button in Login Modal */
+.login-form .secure-exit-button {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 140px;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.login-form .secure-exit-button:hover {
+  background: linear-gradient(135deg, #ff5252, #d32f2f);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+}
+
+.login-form .secure-exit-button:active {
+  transform: translateY(0);
+}
+
+.login-form .secure-exit-button::before {
+  content: '🔒';
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+  margin-right: 0.3rem;
+}
+
+.login-form .secure-exit-button:hover::before {
+  transform: rotate(15deg);
+}
+
+/* General Secure Exit Button - Center Aligned */
+.secure-exit-button {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52) !important;
+  color: white !important;
+  border: none !important;
+  padding: 1rem 2rem !important;
+  border-radius: 10px !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  margin: 1.5rem auto 0 auto !important;
+  display: block !important;
+  text-align: center !important;
+  min-width: 140px !important;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.secure-exit-button:hover {
+  background: linear-gradient(135deg, #ff5252, #d32f2f) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4) !important;
+}
+
+.secure-exit-button:active {
+  transform: translateY(0) !important;
+}
+
+.secure-exit-button::before {
+  content: '🔒 ';
+  font-size: 1.1rem;
+  margin-right: 0.3rem;
+  transition: transform 0.3s ease;
+}
+
+.secure-exit-button:hover::before {
+  transform: rotate(15deg);
+}
+
+/* Override for election completed state */
+.election-completed-container .secure-exit-button {
+  margin-top: 2rem !important;
+  background: linear-gradient(135deg, #6c757d, #495057) !important;
+}
+
+.election-completed-container .secure-exit-button:hover {
+  background: linear-gradient(135deg, #495057, #343a40) !important;
+}
+
+.demo-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.demo-section h3 {
+  color: #666;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.demo-ids {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.demo-id {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.demo-id:hover {
+  background: #e3f2fd;
+  border-color: #1976d2;
+  color: #1976d2;
+}
+
+/* ID Format Information */
+.id-format-info {
+  background: #e3f2fd;
+  border: 1px solid #2196f3;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.id-format-info p {
+  margin: 0.25rem 0;
+  color: #1976d2;
+  font-weight: 500;
+}
+
+/* All IDs Section */
+.all-ids-section {
+  margin-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 1.5rem;
+}
+
+.toggle-ids-btn {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.2s ease;
+  margin-bottom: 1rem;
+}
+
+.toggle-ids-btn:hover {
+  background: #e3f2fd;
+  border-color: #1976d2;
+  color: #1976d2;
+}
+
+.all-ids-container {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.ids-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.class-group h5 {
+  background: #1976d2;
+  color: white;
+  padding: 0.5rem;
+  margin: 0 0 0.5rem 0;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.class-ids {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.25rem;
+}
+
+.student-id {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 0.3rem 0.2rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #666;
+}
+
+.student-id:hover {
+  background: #e3f2fd;
+  border-color: #1976d2;
+  color: #1976d2;
+  font-weight: 600;
+}
+
+/* Election Completed Login State */
+.election-completed-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #e8f5e8, #f0f8ff);
+  border-radius: 20px;
+  border: 3px solid #28a745;
+  box-shadow: 0 20px 40px rgba(40, 167, 69, 0.15);
+  min-height: 300px;
+}
+
+.election-completed-login h2 {
+  color: #28a745 !important;
+  font-size: 2.5rem !important;
+  font-weight: 800 !important;
+  margin-bottom: 1.5rem !important;
+  text-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.election-completed-login p {
+  color: #2c3e50 !important;
+  font-size: 1.2rem !important;
+  font-weight: 500 !important;
+  margin-bottom: 1rem !important;
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+.election-completed-login p:last-of-type {
+  margin-bottom: 2rem !important;
+  font-weight: 600 !important;
+  color: #495057 !important;
+}
+
+.completed-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.view-results-btn {
+  background: linear-gradient(135deg, #28a745, #20c997) !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 1rem 2.5rem !important;
+  border-radius: 50px !important;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  min-width: 200px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.view-results-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.view-results-btn:hover::before {
+  left: 100%;
+}
+
+.view-results-btn:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 30px rgba(40, 167, 69, 0.4) !important;
+  background: linear-gradient(135deg, #20c997, #28a745) !important;
+}
+
+.view-results-btn:active {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 15px rgba(40, 167, 69, 0.3) !important;
+}
+
+/* Success indicators */
+.election-completed-login::before {
+  content: '✅';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 2rem;
+  background: #28a745;
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+  animation: successPulse 2s infinite;
+}
+
+@keyframes successPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Completion Message Container */
+.completion-message {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1.5rem;
+  border-radius: 15px;
+  margin: 1.5rem 0;
+  border: 2px solid rgba(40, 167, 69, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.completion-message p {
+  margin-bottom: 1rem !important;
+}
+
+.completion-message p:last-child {
+  margin-bottom: 0 !important;
+}
+
+.completion-message strong {
+  color: #28a745;
+  font-weight: 700;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .login-modal {
+    padding: 1rem;
+  }
+  
+  .login-container {
+    padding: 2rem;
+  }
+  
+  .login-container h2 {
+    font-size: 1.5rem;
+  }
+  
+  .ids-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .class-ids {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  
+  .student-id {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.1rem;
+  }
+  
+  .election-completed-login {
+    padding: 1.5rem;
+    min-height: 250px;
+  }
+  
+  .election-completed-login h2 {
+    font-size: 2rem !important;
+  }
+  
+  .election-completed-login p {
+    font-size: 1.1rem !important;
+  }
+  
+  .view-results-btn {
+    padding: 0.8rem 2rem !important;
+    font-size: 1.1rem !important;
+    min-width: 180px !important;
+  }
+  
+  /* Mobile responsive for secure exit */
+  .secure-exit-button {
+    padding: 0.8rem 1.5rem !important;
+    font-size: 0.9rem !important;
+    min-width: 120px !important;
+    margin: 1rem auto 0 auto !important;
+  }
+  
+  .election-completed-container .secure-exit-button {
+    margin-top: 1.5rem !important;
+  }
+}
