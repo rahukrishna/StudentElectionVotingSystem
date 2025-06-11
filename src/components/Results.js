@@ -405,18 +405,18 @@ const Results = ({ candidates, votes, positions, totalVotedStudents, electionCom
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Certificate - ${winner.name}</title>
-          <style>
-            body { margin: 0; padding: 20px; font-family: 'Times New Roman', serif; background: #f5f5f5; }
+          <title>Certificate - ${winner.name}</title>          <style>
+            body { margin: 0; padding: 15px; font-family: 'Times New Roman', serif; background: #f5f5f5; }
             .certificate { 
               background: white; 
               border: 8px double #2c3e50; 
-              padding: 40px; 
-              margin: 20px auto; 
-              max-width: 800px; 
+              padding: 35px; 
+              margin: 15px auto; 
+              width: 90%; 
+              max-width: 750px;
               text-align: center; 
               box-shadow: 0 0 20px rgba(0,0,0,0.1);
-              max-height: 90vh;
+              box-sizing: border-box;
             }
             .school-name { font-size: 2.2em; font-weight: bold; color: #2c3e50; margin-bottom: 10px; }
             .certificate-title { font-size: 1.8em; color: #e74c3c; margin: 20px 0; letter-spacing: 3px; }
@@ -426,9 +426,27 @@ const Results = ({ candidates, votes, positions, totalVotedStudents, electionCom
             .decorative-element { font-size: 2.5em; color: #f39c12; margin: 10px 0; }
             .achievement-text { font-size: 1.1em; color: #27ae60; font-weight: bold; margin: 15px 0; }
             @media print {
-              body { background: white; padding: 10px; margin: 0; }
-              .certificate { box-shadow: none; border: 4px solid #2c3e50; max-height: none; width: 100%; max-width: none; padding: 30px; page-break-inside: avoid; }
-              @page { margin: 0.5in; size: letter; }
+              body { 
+                background: white; 
+                padding: 10mm; 
+                margin: 0; 
+                width: 100%;
+                box-sizing: border-box;
+              }
+              .certificate { 
+                box-shadow: none; 
+                border: 6px double #2c3e50; 
+                width: 100%; 
+                max-width: none; 
+                padding: 25px; 
+                page-break-inside: avoid; 
+                margin: 0;
+                box-sizing: border-box;
+              }
+              @page { 
+                margin: 15mm; 
+                size: letter; 
+              }
             }
           </style>
         </head>
@@ -456,18 +474,17 @@ const Results = ({ candidates, votes, positions, totalVotedStudents, electionCom
             <div class="decorative-element">🌟</div>
             
             <div class="certificate-text">This certificate is awarded in recognition of the trust and confidence placed by fellow students.</div>
-            
-            <div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: end;">
-              <div style="text-align: left;">
-                <div style="border-top: 2px solid #2c3e50; width: 200px; margin-bottom: 5px;"></div>
+              <div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 10px;">
+              <div style="text-align: left; flex: 1; min-width: 150px;">
+                <div style="border-top: 2px solid #2c3e50; width: 120px; margin-bottom: 5px;"></div>
                 <div style="font-size: 0.9em;">Principal</div>
               </div>
-              <div style="text-align: center;">
+              <div style="text-align: center; flex: 1; min-width: 100px;">
                 <div style="font-size: 0.8em; color: #7f8c8d;">${new Date().toLocaleDateString()}</div>
                 <div style="font-size: 0.8em; color: #7f8c8d;">Date</div>
               </div>
-              <div style="text-align: right;">
-                <div style="border-top: 2px solid #2c3e50; width: 200px; margin-bottom: 5px;"></div>
+              <div style="text-align: right; flex: 1; min-width: 150px;">
+                <div style="border-top: 2px solid #2c3e50; width: 120px; margin-bottom: 5px; margin-left: auto;"></div>
                 <div style="font-size: 0.9em;">Election Officer</div>
               </div>
             </div>
