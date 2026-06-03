@@ -44,8 +44,16 @@ jobs:
 
       - name: Configure Android SDK path
         run: |
-          $sdkDir = $env:ANDROID_SDK_ROOT
-          if (-not $sdkDir) { $sdkDir = $env:ANDROID_HOME }
+          $sdkDir = 'C:/Users/runneradmin/AppData/Local/Android/Sdk'
+          if (-not (Test-Path $sdkDir)) {
+            $sdkDir = $env:ANDROID_SDK_ROOT
+          }
+          if (-not $sdkDir) {
+            $sdkDir = $env:ANDROID_HOME
+          }
+          $sdkDir = $sdkDir -replace '\\', '/'
+          $env:ANDROID_SDK_ROOT = $sdkDir
+          $env:ANDROID_HOME = $sdkDir
           "sdk.dir=$sdkDir" | Out-File -FilePath "android/local.properties" -Encoding ascii
 
       - name: Build web assets for mobile
