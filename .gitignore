@@ -23,3 +23,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .gitleaks.toml
+
+# Android signing keys
+/android/keystore/
+*.jks
+*.keystore
+*.idsig
