@@ -56,7 +56,7 @@ const VotingInterface = ({ candidates, onVoteSubmit, onCancel, onSecureExit, pos
       const pageTop = window.pageYOffset || document.documentElement.scrollTop;
       const header = document.querySelector('.app-header');
       const headerHeight = header ? header.getBoundingClientRect().height : 0;
-      const extraTopPadding = window.innerWidth <= 768 ? 18 : 24;
+      const extraTopPadding = window.innerWidth <= 768 ? 64 : 78;
       const topOffset = headerHeight + extraTopPadding;
       const targetTop = Math.max(0, rect.top + pageTop - topOffset);
 
