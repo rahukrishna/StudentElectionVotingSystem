@@ -765,20 +765,17 @@ function App() {
       
       if (schoolLeaderPos) {
         defaultCandidates.schoolLeader = [
-          { id: 1, name: 'Alex Johnson', grade: '12th', image: null, symbol: '🦅' },
-          { id: 2, name: 'Sarah Miller', grade: '12th', image: null, symbol: '🌟' },
-          { id: 3, name: 'Michael Chen', grade: '11th', image: null, symbol: '🚀' },
-          { id: 4, name: 'Emma Wilson', grade: '12th', image: null, symbol: '🏆' }
+          { id: 1, name: 'Anay S', grade: 'N/A', image: null, symbol: '🎒' },
+          { id: 2, name: 'Avinash V', grade: 'N/A', image: null, symbol: '🧰' },
+          { id: 3, name: 'Lithin Babu', grade: 'N/A', image: null, symbol: '📚' }
         ];
       }
       
       if (ladySchoolLeaderPos) {
         defaultCandidates.ladySchoolLeader = [
-          { id: 5, name: 'Jessica Brown', grade: '12th', image: null, symbol: '🌺' },
-          { id: 6, name: 'Olivia Davis', grade: '11th', image: null, symbol: '🦋' },
-          { id: 7, name: 'Sophia Garcia', grade: '12th', image: null, symbol: '🌙' },
-          { id: 8, name: 'Maya Patel', grade: '11th', image: null, symbol: '⭐' },
-          { id: 9, name: 'Isabella Rodriguez', grade: '12th', image: null, symbol: '🌸' }
+          { id: 4, name: 'Anshika Sudeesh', grade: 'N/A', image: null, symbol: '🖊️' },
+          { id: 5, name: 'Avanthika S', grade: 'N/A', image: null, symbol: '📏' },
+          { id: 6, name: 'Thanmayee HS', grade: 'N/A', image: null, symbol: '🧽' }
         ];
       }
       
@@ -1194,21 +1191,18 @@ function App() {
           
           if (schoolLeaderPos) {
             defaultCandidates.schoolLeader = [
-              { id: 1, name: 'Alex Johnson', grade: '12th', image: null, symbol: '🦅' },
-              { id: 2, name: 'Sarah Miller', grade: '12th', image: null, symbol: '🌟' },
-              { id: 3, name: 'Michael Chen', grade: '11th', image: null, symbol: '🚀' },
-              { id: 4, name: 'Emma Wilson', grade: '12th', image: null, symbol: '🏆' }
+              { id: 1, name: 'Anay S', grade: 'N/A', image: null, symbol: '🎒' },
+              { id: 2, name: 'Avinash V', grade: 'N/A', image: null, symbol: '🧰' },
+              { id: 3, name: 'Lithin Babu', grade: 'N/A', image: null, symbol: '📚' }
             ];
             defaultVotes.schoolLeader = {};
           }
           
           if (ladySchoolLeaderPos) {
             defaultCandidates.ladySchoolLeader = [
-              { id: 5, name: 'Jessica Brown', grade: '12th', image: null, symbol: '🌺' },
-              { id: 6, name: 'Olivia Davis', grade: '11th', image: null, symbol: '🦋' },
-              { id: 7, name: 'Sophia Garcia', grade: '12th', image: null, symbol: '🌙' },
-              { id: 8, name: 'Maya Patel', grade: '11th', image: null, symbol: '⭐' },
-              { id: 9, name: 'Isabella Rodriguez', grade: '12th', image: null, symbol: '🌸' }
+              { id: 4, name: 'Anshika Sudeesh', grade: 'N/A', image: null, symbol: '🖊️' },
+              { id: 5, name: 'Avanthika S', grade: 'N/A', image: null, symbol: '📏' },
+              { id: 6, name: 'Thanmayee HS', grade: 'N/A', image: null, symbol: '🧽' }
             ];
             defaultVotes.ladySchoolLeader = {};
           }
