@@ -338,5 +338,8 @@ const VotingInterface = ({ candidates, onVoteSubmit, onCancel, onSecureExit, pos
     </div>
   );
 };
+        <div className="requirement-note">
+          ⚠️ Please do not close or refresh the browser until the election process is completed. Closing the browser early may result in vote data loss.
+        </div>
 
 export default VotingInterface;
