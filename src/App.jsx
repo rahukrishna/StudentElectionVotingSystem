@@ -1861,12 +1861,12 @@ function App() {
           <div className="school-info">
             <div className="school-brand">
               <img
-                src="/bvb-logo.png"
+                src="/bvb-logo.svg"
                 alt="Bharatiya Vidya Bhavan Valanchery Kendra"
                 className="school-logo"
                 onError={(e) => {
                   e.currentTarget.onerror = null;
-                  e.currentTarget.src = '/logo192.png';
+                  e.currentTarget.src = '/bvb-logo.png';
                 }}
               />
             </div>
