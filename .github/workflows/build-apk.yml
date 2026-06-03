@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   build-apk:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -40,10 +40,9 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Install Android SDK packages
-        shell: bash
         run: |
-          yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;35.0.0"
+          yes | sdkmanager --licenses || true
+          sdkmanager --install "platform-tools" "platforms;android-36" "build-tools;35.0.0"
 
       - name: Install dependencies
         run: npm ci
@@ -53,14 +52,15 @@ jobs:
 
       - name: Copy web assets to Android
         run: |
-          Remove-Item -Recurse -Force "android/app/src/main/assets/public" -ErrorAction SilentlyContinue
-          New-Item -ItemType Directory -Path "android/app/src/main/assets/public" -Force | Out-Null
-          Copy-Item -Path "dist/*" -Destination "android/app/src/main/assets/public" -Recurse -Force
+          rm -rf android/app/src/main/assets/public
+          mkdir -p android/app/src/main/assets/public
+          cp -r dist/* android/app/src/main/assets/public/
 
       - name: Build Android debug APK
         working-directory: android
         run: |
-          .\gradlew.bat --no-daemon --stacktrace assembleDebug
+          chmod +x gradlew
+          ./gradlew --no-daemon --stacktrace assembleDebug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
