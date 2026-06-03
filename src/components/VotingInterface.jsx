@@ -41,29 +41,40 @@ const VotingInterface = ({ candidates, onVoteSubmit, onCancel, onSecureExit, pos
     }, 1500);
   };
 
-  // Function to scroll directly to the candidates list section
+  // Function to scroll directly to where candidate names are visible
   const scrollToCandidates = () => {
-    // Allow React to paint the current step UI before attempting smooth scroll.
-    setTimeout(() => {
+    const scrollOnce = () => {
+      const firstCandidateName = document.querySelector('.voting-section .candidate-card .candidate-info h3');
+      const firstCandidateCard = document.querySelector('.voting-section .candidate-card');
       const candidatesGrid = document.querySelector('.voting-section .candidates-grid');
       const sectionTitle = document.querySelector('.voting-section h2');
-      const targetElement = candidatesGrid || sectionTitle;
+      const targetElement = firstCandidateName || firstCandidateCard || candidatesGrid || sectionTitle;
 
       if (!targetElement) {
-        return;
+        return false;
       }
 
-      // Use viewport position to avoid offsetParent/offsetTop inconsistencies.
       const rect = targetElement.getBoundingClientRect();
       const pageTop = window.pageYOffset || document.documentElement.scrollTop;
-      const topPadding = 120;
-      const targetTop = Math.max(0, rect.top + pageTop - topPadding);
+      const preferredViewportOffset = window.innerWidth <= 768
+        ? Math.round(window.innerHeight * 0.22)
+        : 180;
+      const targetTop = Math.max(0, rect.top + pageTop - preferredViewportOffset);
 
       window.scrollTo({
         top: targetTop,
         behavior: 'smooth'
       });
-    }, 350);
+
+      return true;
+    };
+
+    // Retry to handle async layout shifts (images/fonts) so names remain visible.
+    [120, 420, 900].forEach(delay => {
+      setTimeout(() => {
+        scrollOnce();
+      }, delay);
+    });
   };
 
   // Function to scroll to action buttons
