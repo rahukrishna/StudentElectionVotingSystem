@@ -624,6 +624,35 @@
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.12);
 }
 
+.setting-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.save-settings-btn {
+  background: linear-gradient(135deg, #1976d2, #42a5f5);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-settings-btn:hover {
+  background: linear-gradient(135deg, #1565c0, #1976d2);
+  transform: translateY(-1px);
+}
+
+.settings-save-message {
+  margin: 0.3rem 0 0.8rem;
+  color: #2e7d32;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
 .setting-value {
   color: #1976d2;
   font-weight: 700;

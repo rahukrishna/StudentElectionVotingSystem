@@ -44,6 +44,8 @@ const AdminPanel = ({
   const [showVotingStatus, setShowVotingStatus] = useState(false);
   const [votingStatusPassword, setVotingStatusPassword] = useState('');
   const [isVotingStatusUnlocked, setIsVotingStatusUnlocked] = useState(false);
+  const [eligibleStudentsDraft, setEligibleStudentsDraft] = useState(String(safeTotalEligibleStudents));
+  const [settingsSaveMessage, setSettingsSaveMessage] = useState('');
 
   // School info editing state
   const [schoolInfoForm, setSchoolInfoForm] = useState({
@@ -61,6 +63,23 @@ const AdminPanel = ({
       fullName: schoolInfo.fullName
     });
   }, [schoolInfo]);
+
+  React.useEffect(() => {
+    setEligibleStudentsDraft(String(safeTotalEligibleStudents));
+  }, [safeTotalEligibleStudents]);
+
+  const handleSaveEligibleStudents = () => {
+    const parsed = parseInt(eligibleStudentsDraft, 10);
+
+    if (Number.isNaN(parsed) || parsed < 1) {
+      setSettingsSaveMessage('Enter a valid number greater than 0.');
+      return;
+    }
+
+    setTotalEligibleStudents(parsed);
+    setSettingsSaveMessage('Eligible students count saved successfully.');
+  };
+
   const handleAddCandidate = (e) => {
     e.preventDefault();
     if (newCandidate.name.trim() && newCandidate.grade.trim()) {
@@ -1211,20 +1230,32 @@ const AdminPanel = ({
                 <h3>Election Configuration</h3>
                 <div className="setting-item">
                   <label htmlFor="totalEligibleStudentsInput">Total Eligible Students:</label>
-                  <input
-                    id="totalEligibleStudentsInput"
-                    type="number"
-                    min="1"
-                    step="1"
-                    value={safeTotalEligibleStudents}
-                    onChange={(e) => {
-                      const nextValue = parseInt(e.target.value, 10);
-                      if (!Number.isNaN(nextValue) && nextValue > 0) {
-                        setTotalEligibleStudents(nextValue);
-                      }
-                    }}
-                  />
+                  <div className="setting-input-group">
+                    <input
+                      id="totalEligibleStudentsInput"
+                      type="number"
+                      min="1"
+                      step="1"
+                      value={eligibleStudentsDraft}
+                      onChange={(e) => {
+                        setEligibleStudentsDraft(e.target.value);
+                        if (settingsSaveMessage) {
+                          setSettingsSaveMessage('');
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="save-settings-btn"
+                      onClick={handleSaveEligibleStudents}
+                    >
+                      Save
+                    </button>
+                  </div>
                 </div>
+                {settingsSaveMessage && (
+                  <p className="settings-save-message">{settingsSaveMessage}</p>
+                )}
                 <div className="setting-item">
                   <label>Allow Multiple Votes per Student:</label>
                   <span className="setting-value">Disabled (Security)</span>
