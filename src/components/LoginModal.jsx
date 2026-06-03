@@ -38,6 +38,9 @@ const LoginModal = ({ onLogin, onSecureExit, electionCompleted, onViewResults })
           <>
             <h2>🗳️ Student Login</h2>
             <p>Click continue to start voting.</p>
+            <div className="login-warning-note">
+              ⚠️ Do not close or refresh the browser until election voting is completed. Closing early may cause data loss.
+            </div>
             
             <form onSubmit={handleSubmit} className="login-form">
               <button type="submit" className="login-button large">
