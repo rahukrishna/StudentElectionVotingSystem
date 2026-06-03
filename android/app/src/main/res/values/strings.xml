@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Student Election Voting System</string>
+    <string name="title_activity_main">Student Election Voting System</string>
+    <string name="package_name">com.bvb.valanchery.election</string>
+    <string name="custom_url_scheme">com.bvb.valanchery.election</string>
+</resources>

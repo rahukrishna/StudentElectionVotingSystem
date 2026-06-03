@@ -22,6 +22,20 @@ A modern, secure, and user-friendly web application built with React for managin
 
 ## 🚀 Quick Start
 
+## 📱 Mobile App
+
+This project can now run as a native mobile app using Capacitor.
+
+- Android and iOS wrapper setup instructions are in `MOBILE_APP_SETUP.md`
+- Android native project is available in `android/`
+
+Use these commands:
+
+- `npm run mobile:sync`
+- `npm run mobile:android`
+- `npm run mobile:android:run`
+- `npm run mobile:ios` (macOS only)
+
 ### Prerequisites
 - Node.js (v14 or higher)
 - npm or yarn package manager
