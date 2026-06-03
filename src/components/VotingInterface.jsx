@@ -54,8 +54,11 @@ const VotingInterface = ({ candidates, onVoteSubmit, onCancel, onSecureExit, pos
 
       const rect = targetElement.getBoundingClientRect();
       const pageTop = window.pageYOffset || document.documentElement.scrollTop;
-      const preferredViewportOffset = window.innerWidth <= 768 ? 92 : 118;
-      const targetTop = Math.max(0, rect.top + pageTop - preferredViewportOffset);
+      const header = document.querySelector('.app-header');
+      const headerHeight = header ? header.getBoundingClientRect().height : 0;
+      const extraTopPadding = window.innerWidth <= 768 ? 18 : 24;
+      const topOffset = headerHeight + extraTopPadding;
+      const targetTop = Math.max(0, rect.top + pageTop - topOffset);
 
       window.scrollTo({
         top: targetTop,
