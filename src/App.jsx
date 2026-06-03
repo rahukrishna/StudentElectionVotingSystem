@@ -949,18 +949,18 @@ function App() {
         const gainNode = audioContext.createGain();
         const now = audioContext.currentTime;
 
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(880, now);
-        oscillator.frequency.exponentialRampToValueAtTime(1320, now + 0.12);
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(1180, now);
+        oscillator.frequency.exponentialRampToValueAtTime(1240, now + 1.2);
 
         gainNode.gain.setValueAtTime(0.0001, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.12, now + 0.02);
-        gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.24);
+        gainNode.gain.exponentialRampToValueAtTime(0.22, now + 0.03);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 1.4);
 
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
         oscillator.start(now);
-        oscillator.stop(now + 0.24);
+        oscillator.stop(now + 1.4);
 
         oscillator.onended = () => {
           audioContext.close().catch(() => {});
