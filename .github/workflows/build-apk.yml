@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   build-apk:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout repository
@@ -47,15 +47,14 @@ jobs:
 
       - name: Copy web assets to Android
         run: |
-          rm -rf android/app/src/main/assets/public
-          mkdir -p android/app/src/main/assets/public
-          cp -r dist/* android/app/src/main/assets/public/
+          Remove-Item -Recurse -Force "android/app/src/main/assets/public" -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path "android/app/src/main/assets/public" -Force | Out-Null
+          Copy-Item -Path "dist/*" -Destination "android/app/src/main/assets/public" -Recurse -Force
 
       - name: Build Android debug APK
         working-directory: android
         run: |
-          chmod +x gradlew
-          ./gradlew --no-daemon --stacktrace assembleDebug
+          .\gradlew.bat --no-daemon --stacktrace assembleDebug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
