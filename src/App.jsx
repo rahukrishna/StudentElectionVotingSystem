@@ -9,7 +9,7 @@ import Results from './components/Results';
 import LoginModal from './components/LoginModal';
 import ErrorBoundary from './components/ErrorBoundary';
 
-const DEFAULT_TOTAL_ELIGIBLE_STUDENTS = 180;
+const DEFAULT_TOTAL_ELIGIBLE_STUDENTS = 174;
 
 // StatusView Component
 function StatusView({ 
