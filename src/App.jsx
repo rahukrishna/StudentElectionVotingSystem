@@ -1859,7 +1859,7 @@ function App() {
         
         <header className="app-header">
           <div className="school-info">
-            <h1>🏫 {schoolInfo.fullName}</h1>
+            <h1>{schoolInfo.fullName}</h1>
             <h2>School Election Voting System</h2>
           </div>
           <nav className="navigation">
