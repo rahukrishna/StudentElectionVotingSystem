@@ -41,14 +41,12 @@ const VotingInterface = ({ candidates, onVoteSubmit, onCancel, onSecureExit, pos
     }, 1500);
   };
 
-  // Function to scroll directly to where candidate names are visible
+  // Function to scroll to the start of the voting section so heading + candidates are visible
   const scrollToCandidates = () => {
     const scrollOnce = () => {
-      const firstCandidateName = document.querySelector('.voting-section .candidate-card .candidate-info h3');
-      const firstCandidateCard = document.querySelector('.voting-section .candidate-card');
-      const candidatesGrid = document.querySelector('.voting-section .candidates-grid');
       const sectionTitle = document.querySelector('.voting-section h2');
-      const targetElement = firstCandidateName || firstCandidateCard || candidatesGrid || sectionTitle;
+      const candidatesGrid = document.querySelector('.voting-section .candidates-grid');
+      const targetElement = sectionTitle || candidatesGrid;
 
       if (!targetElement) {
         return false;
@@ -56,9 +54,7 @@ const VotingInterface = ({ candidates, onVoteSubmit, onCancel, onSecureExit, pos
 
       const rect = targetElement.getBoundingClientRect();
       const pageTop = window.pageYOffset || document.documentElement.scrollTop;
-      const preferredViewportOffset = window.innerWidth <= 768
-        ? Math.round(window.innerHeight * 0.22)
-        : 180;
+      const preferredViewportOffset = window.innerWidth <= 768 ? 92 : 118;
       const targetTop = Math.max(0, rect.top + pageTop - preferredViewportOffset);
 
       window.scrollTo({
@@ -69,7 +65,7 @@ const VotingInterface = ({ candidates, onVoteSubmit, onCancel, onSecureExit, pos
       return true;
     };
 
-    // Retry to handle async layout shifts (images/fonts) so names remain visible.
+    // Retry to handle async layout shifts (images/fonts).
     [120, 420, 900].forEach(delay => {
       setTimeout(() => {
         scrollOnce();
