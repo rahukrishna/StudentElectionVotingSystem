@@ -28,6 +28,11 @@ This project can now run as a native mobile app using Capacitor.
 
 - Android and iOS wrapper setup instructions are in `MOBILE_APP_SETUP.md`
 - Android native project is available in `android/`
+- Auto APK workflow is in `.github/workflows/build-apk.yml`
+
+Latest one-click APK download page:
+
+- `https://github.com/rahukrishna/StudentElectionVotingSystem/releases/tag/apk-latest`
 
 Use these commands:
 
