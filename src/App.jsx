@@ -951,16 +951,16 @@ function App() {
 
         oscillator.type = 'square';
         oscillator.frequency.setValueAtTime(1180, now);
-        oscillator.frequency.exponentialRampToValueAtTime(1240, now + 1.8);
+        oscillator.frequency.exponentialRampToValueAtTime(1240, now + 2.7);
 
         gainNode.gain.setValueAtTime(0.0001, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.28, now + 0.03);
-        gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 2.0);
+        gainNode.gain.exponentialRampToValueAtTime(0.34, now + 0.03);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 3.0);
 
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
         oscillator.start(now);
-        oscillator.stop(now + 2.0);
+        oscillator.stop(now + 3.0);
 
         oscillator.onended = () => {
           audioContext.close().catch(() => {});
