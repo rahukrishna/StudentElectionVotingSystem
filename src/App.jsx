@@ -1859,18 +1859,7 @@ function App() {
         
         <header className="app-header">
           <div className="school-info">
-            <div className="school-brand">
-              <img
-                src="/bvb-logo.svg"
-                alt="Bharatiya Vidya Bhavan Valanchery Kendra"
-                className="school-logo"
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = '/bvb-logo.png';
-                }}
-              />
-            </div>
-            <h1>{schoolInfo.fullName}</h1>
+            <h1>🏫 {schoolInfo.fullName}</h1>
             <h2>School Election Voting System</h2>
           </div>
           <nav className="navigation">
