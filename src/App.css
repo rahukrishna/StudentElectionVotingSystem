@@ -47,12 +47,43 @@ body {
   margin-bottom: 1.5rem;
 }
 
+.school-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.96);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 14px;
+  padding: 0.55rem 0.95rem;
+  margin-bottom: 0.9rem;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+}
+
+.school-logo {
+  width: 220px;
+  max-width: 72vw;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
+}
+
 .school-info h1 {
   color: white;
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .school-logo {
+    width: 170px;
+  }
+
+  .school-brand {
+    padding: 0.45rem 0.75rem;
+    margin-bottom: 0.7rem;
+  }
 }
 
 .school-info h2 {
