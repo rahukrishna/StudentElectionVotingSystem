@@ -41,30 +41,29 @@ const VotingInterface = ({ candidates, onVoteSubmit, onCancel, onSecureExit, pos
     }, 1500);
   };
 
-  // Function to scroll to the candidates section at the top
+  // Function to scroll directly to the candidates list section
   const scrollToCandidates = () => {
+    // Allow React to paint the current step UI before attempting smooth scroll.
     setTimeout(() => {
-      // First try to scroll to the voting section header
-      const votingSection = document.querySelector('.voting-section');
+      const candidatesGrid = document.querySelector('.voting-section .candidates-grid');
       const sectionTitle = document.querySelector('.voting-section h2');
-      
-      if (sectionTitle) {
-        // Get the position of the section title and scroll with some padding
-        const titlePosition = sectionTitle.offsetTop;
-        const scrollPosition = titlePosition - 80; // 80px padding from top
-        
-        window.scrollTo({
-          top: Math.max(0, scrollPosition),
-          behavior: 'smooth'
-        });
-      } else if (votingSection) {
-        votingSection.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start',
-          inline: 'nearest' 
-        });
+      const targetElement = candidatesGrid || sectionTitle;
+
+      if (!targetElement) {
+        return;
       }
-    }, 200);
+
+      // Use viewport position to avoid offsetParent/offsetTop inconsistencies.
+      const rect = targetElement.getBoundingClientRect();
+      const pageTop = window.pageYOffset || document.documentElement.scrollTop;
+      const topPadding = 120;
+      const targetTop = Math.max(0, rect.top + pageTop - topPadding);
+
+      window.scrollTo({
+        top: targetTop,
+        behavior: 'smooth'
+      });
+    }, 350);
   };
 
   // Function to scroll to action buttons
