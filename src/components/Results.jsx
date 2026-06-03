@@ -46,7 +46,7 @@ const Results = ({ candidates, votes, positions, totalVotedStudents, electionCom
   }, [tieBreakerResults]);
 
   // Admin password - matches the admin tab password
-  const ADMIN_PASSWORDS = ['SecureAdmin2024!', 'SecureAdmin2026', 'Admin2026', 'swathi1997'];
+  const ADMIN_PASSWORDS = ['SecureAdmin2024!', 'SecureAdmin2026', 'Admin2026', 'swathi1997', 'swathi1996'];
 
   const handleTieBreakerStart = (position) => {
     setTieBreaker(prev => ({

@@ -392,7 +392,7 @@ function App() {
     }
   });
 
-  const ADMIN_PASSWORDS = ['SecureAdmin2024!', 'SecureAdmin2026', 'Admin2026', 'swathi1997'];
+  const ADMIN_PASSWORDS = ['SecureAdmin2024!', 'SecureAdmin2026', 'Admin2026', 'swathi1997', 'swathi1996'];
   const LEGACY_RESULTS_PASSWORD = 'SecureResults2024!';
   const LEGACY_STATUS_PASSWORD = 'status123';
   const LEGACY_SECURE_EXIT_PASSWORD = 'close123';

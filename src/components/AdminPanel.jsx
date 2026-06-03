@@ -21,7 +21,7 @@ const AdminPanel = ({
   totalEligibleStudents,
   setTotalEligibleStudents
 }) => {
-  const ADMIN_PASSWORDS = ['SecureAdmin2024!', 'SecureAdmin2026', 'Admin2026', 'swathi1997'];
+  const ADMIN_PASSWORDS = ['SecureAdmin2024!', 'SecureAdmin2026', 'Admin2026', 'swathi1997', 'swathi1996'];
   const LEGACY_STATUS_PASSWORD = 'status123';
   const safeTotalEligibleStudents = Math.max(1, parseInt(totalEligibleStudents, 10) || 1);
 
