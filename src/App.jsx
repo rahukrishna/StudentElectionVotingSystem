@@ -9,10 +9,7 @@ import Results from './components/Results';
 import LoginModal from './components/LoginModal';
 import ErrorBoundary from './components/ErrorBoundary';
 
-const ELIGIBLE_GRADE_START = 5;
-const ELIGIBLE_GRADE_END = 10;
-const STUDENTS_PER_GRADE = 30;
-const TOTAL_ELIGIBLE_STUDENTS = (ELIGIBLE_GRADE_END - ELIGIBLE_GRADE_START + 1) * STUDENTS_PER_GRADE;
+const DEFAULT_TOTAL_ELIGIBLE_STUDENTS = 180;
 
 // StatusView Component
 function StatusView({ 
@@ -26,12 +23,14 @@ function StatusView({
   positions, 
   onPauseVoting, 
   onResumeVoting, 
-  schoolInfo 
+  schoolInfo,
+  totalEligibleStudents
 }) {
   const totalVotesCast = positions
     .filter(pos => pos.isActive)
     .reduce((sum, position) => sum + Object.values(votes[position.id] || {}).reduce((a, b) => a + b, 0), 0);
-  const participationRate = ((votedStudents.length / TOTAL_ELIGIBLE_STUDENTS) * 100).toFixed(1);
+  const safeTotalEligibleStudents = Math.max(1, parseInt(totalEligibleStudents, 10) || DEFAULT_TOTAL_ELIGIBLE_STUDENTS);
+  const participationRate = ((votedStudents.length / safeTotalEligibleStudents) * 100).toFixed(1);
 
   return (
     <div className="status-view">
@@ -67,7 +66,7 @@ function StatusView({
             ></div>
           </div>
           <p className="progress-text">
-            {votedStudents.length} out of {TOTAL_ELIGIBLE_STUDENTS} eligible students (Classes {ELIGIBLE_GRADE_START}-{ELIGIBLE_GRADE_END}) have voted
+            {votedStudents.length} out of {safeTotalEligibleStudents} eligible students have voted
           </p>
         </div>
 
@@ -98,8 +97,8 @@ function StatusView({
           <h3>📝 Voting Summary</h3>
           <div className="summary-stats">
             <div className="summary-item">
-              <span className="summary-label">Eligible Classes:</span>
-              <span className="summary-value good">{ELIGIBLE_GRADE_START}-{ELIGIBLE_GRADE_END}</span>
+              <span className="summary-label">Eligible Students Configured:</span>
+              <span className="summary-value good">{safeTotalEligibleStudents}</span>
             </div>
             <div className="summary-item">
               <span className="summary-label">Total Students Voted:</span>
@@ -179,7 +178,7 @@ function StatusView({
     const currentTime = new Date().toLocaleTimeString();
     
     const totalVoted = votedStudents.length;
-    const totalStudents = TOTAL_ELIGIBLE_STUDENTS;
+    const totalStudents = safeTotalEligibleStudents;
     const overallPercentage = ((totalVoted / totalStudents) * 100).toFixed(1);
     
     // Calculate vote distribution
@@ -355,7 +354,7 @@ function StatusView({
         <div class="summary-card">
           <h3>Total Students Voted</h3>
           <div class="summary-number">${totalVoted}</div>
-          <p>Eligible group: Classes ${ELIGIBLE_GRADE_START}-${ELIGIBLE_GRADE_END} (${totalStudents} students)</p>
+          <p>Configured eligible students: ${totalStudents}</p>
         </div>
 
         <div class="footer">
@@ -382,6 +381,16 @@ function StatusView({
 function App() {
   const [currentView, setCurrentView] = useState('login');
   const [currentStudent, setCurrentStudent] = useState(null);
+  const [totalEligibleStudents, setTotalEligibleStudents] = useState(() => {
+    try {
+      const saved = localStorage.getItem('schoolElection_totalEligibleStudents');
+      const parsed = saved ? parseInt(JSON.parse(saved), 10) : DEFAULT_TOTAL_ELIGIBLE_STUDENTS;
+      return Number.isNaN(parsed) || parsed < 1 ? DEFAULT_TOTAL_ELIGIBLE_STUDENTS : parsed;
+    } catch (error) {
+      console.error('Error loading total eligible students:', error);
+      return DEFAULT_TOTAL_ELIGIBLE_STUDENTS;
+    }
+  });
 
   const ADMIN_PASSWORD = 'SecureAdmin2024!';
   const LEGACY_RESULTS_PASSWORD = 'SecureResults2024!';
@@ -516,6 +525,15 @@ function App() {
       console.error('Error saving voting pause status:', error);
     }
   }, [votingPaused]);
+
+  // Save eligible students configuration to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('schoolElection_totalEligibleStudents', JSON.stringify(totalEligibleStudents));
+    } catch (error) {
+      console.error('Error saving total eligible students:', error);
+    }
+  }, [totalEligibleStudents]);
 
   const completeElection = () => {
     setPasswordDialog({
@@ -889,24 +907,8 @@ function App() {
   }, [votes]);
 
   const handleStudentLogin = (studentId = '') => {
-    let normalizedStudentId = '';
-
-    if (typeof studentId === 'string') {
-      normalizedStudentId = studentId.trim();
-    } else if (studentId && typeof studentId === 'object') {
-      const grade = parseInt(studentId.grade, 10);
-      const rollNumber = (studentId.rollNumber || '').trim().toUpperCase().replace(/\s+/g, '');
-
-      if (Number.isNaN(grade) || grade < ELIGIBLE_GRADE_START || grade > ELIGIBLE_GRADE_END) {
-        alert(`Only classes ${ELIGIBLE_GRADE_START} to ${ELIGIBLE_GRADE_END} are eligible to vote.`);
-        return false;
-      }
-
-      const generatedRollNumber = rollNumber || `AUTO${Date.now().toString().slice(-4)}${Math.random().toString(36).slice(2, 4).toUpperCase()}`;
-      normalizedStudentId = `STD${grade.toString().padStart(2, '0')}-${generatedRollNumber}`;
-    }
-
-    const generatedStudentId = normalizedStudentId || `STD${ELIGIBLE_GRADE_START}-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+    const normalizedStudentId = typeof studentId === 'string' ? studentId.trim() : '';
+    const generatedStudentId = normalizedStudentId || `VOTER-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
 
     if (normalizedStudentId && votedStudents.includes(normalizedStudentId)) {
       alert('This student has already voted!');
@@ -1180,6 +1182,7 @@ function App() {
           localStorage.removeItem('schoolElection_completed');
           localStorage.removeItem('schoolElection_resultsPublished');
           localStorage.removeItem('schoolElection_tieBreakers');
+          localStorage.removeItem('schoolElection_totalEligibleStudents');
           
           // Reset to default state - only add sample candidates if default positions exist
           const defaultCandidates = {};
@@ -1223,6 +1226,7 @@ function App() {
           setElectionCompleted(false);
           setResultsPublished(false);
           setTieBreakerResults({});
+          setTotalEligibleStudents(DEFAULT_TOTAL_ELIGIBLE_STUDENTS);
           
           alert('✅ All election data has been cleared and reset to defaults! Voting is now enabled.');
         } catch (error) {
@@ -1835,6 +1839,7 @@ function App() {
               onResumeVoting={resumeVoting}
               schoolInfo={schoolInfo}
               positions={positions}
+              totalEligibleStudents={totalEligibleStudents}
             />
           )}
           
@@ -1855,6 +1860,8 @@ function App() {
               setSchoolInfo={setSchoolInfo}
               positions={positions}
               setPositions={setPositions}
+              totalEligibleStudents={totalEligibleStudents}
+              setTotalEligibleStudents={setTotalEligibleStudents}
             />
           )}
         </main>

@@ -17,14 +17,13 @@ const AdminPanel = ({
   schoolInfo,
   setSchoolInfo,
   positions,
-  setPositions
+  setPositions,
+  totalEligibleStudents,
+  setTotalEligibleStudents
 }) => {
   const ADMIN_PASSWORD = 'SecureAdmin2024!';
   const LEGACY_STATUS_PASSWORD = 'status123';
-  const ELIGIBLE_GRADE_START = 5;
-  const ELIGIBLE_GRADE_END = 10;
-  const STUDENTS_PER_GRADE = 30;
-  const TOTAL_ELIGIBLE_STUDENTS = (ELIGIBLE_GRADE_END - ELIGIBLE_GRADE_START + 1) * STUDENTS_PER_GRADE;
+  const safeTotalEligibleStudents = Math.max(1, parseInt(totalEligibleStudents, 10) || 1);
 
   const [activeTab, setActiveTab] = useState('overview');
   const [newCandidate, setNewCandidate] = useState({
@@ -228,7 +227,7 @@ const AdminPanel = ({
   };
 
   const getOverallStats = () => {
-    const totalStudents = TOTAL_ELIGIBLE_STUDENTS;
+    const totalStudents = safeTotalEligibleStudents;
     const totalVoted = votedStudents.length;
     const percentage = ((totalVoted / totalStudents) * 100).toFixed(1);
     
@@ -289,7 +288,7 @@ const AdminPanel = ({
           position: position.displayName,
           votes: Object.values(votes[position.id] || {}).reduce((a, b) => a + b, 0)
         })),
-        participationRate: `${((votedStudents.length / TOTAL_ELIGIBLE_STUDENTS) * 100).toFixed(2)}%`
+        participationRate: `${((votedStudents.length / safeTotalEligibleStudents) * 100).toFixed(2)}%`
       },
       results: positionResults,
       votedStudents: votedStudents.sort()
@@ -1185,22 +1184,21 @@ const AdminPanel = ({
           {activeTab === 'students' && (
             <div className="students-tab">
               <h2>Student Voting Records</h2>
-              <p>Students who have voted: {votedStudents.length}</p>
-              
-              <div className="students-list">
-                {votedStudents.length > 0 ? (
-                  <div className="voted-students">
-                    <h3>Voted Students:</h3>
-                    {votedStudents.map((studentId, index) => (
-                      <div key={index} className="student-record">
-                        <span>Student ID: {studentId}</span>
-                        <span className="voted-badge">✓ Voted</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="no-votes">No students have voted yet.</p>
-                )}
+              <p>Summary view only</p>
+
+              <div className="students-summary-grid">
+                <div className="student-summary-card voted">
+                  <h3>Students Voted</h3>
+                  <div className="student-summary-number">{votedStudents.length}</div>
+                </div>
+                <div className="student-summary-card remaining">
+                  <h3>Students Remaining</h3>
+                  <div className="student-summary-number">{Math.max(0, safeTotalEligibleStudents - votedStudents.length)}</div>
+                </div>
+                <div className="student-summary-card eligible">
+                  <h3>Total Eligible Students</h3>
+                  <div className="student-summary-number">{safeTotalEligibleStudents}</div>
+                </div>
               </div>
             </div>
           )}
@@ -1211,6 +1209,22 @@ const AdminPanel = ({
               
               <div className="settings-section">
                 <h3>Election Configuration</h3>
+                <div className="setting-item">
+                  <label htmlFor="totalEligibleStudentsInput">Total Eligible Students:</label>
+                  <input
+                    id="totalEligibleStudentsInput"
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={safeTotalEligibleStudents}
+                    onChange={(e) => {
+                      const nextValue = parseInt(e.target.value, 10);
+                      if (!Number.isNaN(nextValue) && nextValue > 0) {
+                        setTotalEligibleStudents(nextValue);
+                      }
+                    }}
+                  />
+                </div>
                 <div className="setting-item">
                   <label>Allow Multiple Votes per Student:</label>
                   <span className="setting-value">Disabled (Security)</span>
@@ -1270,7 +1284,7 @@ const AdminPanel = ({
                     <div className="stat-content">
                       <h4>Students Voted</h4>
                       <div className="stat-value">{getOverallStats().totalVoted}</div>
-                      <p>Across eligible classes ({ELIGIBLE_GRADE_START}-{ELIGIBLE_GRADE_END})</p>
+                      <p>Out of {safeTotalEligibleStudents} eligible students</p>
                     </div>
                   </div>
                   

@@ -548,6 +548,87 @@
   margin: 0;
 }
 
+/* Students tab summary cards */
+.students-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.student-summary-card {
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 14px;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.student-summary-card h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.student-summary-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1976d2;
+}
+
+.student-summary-card.voted {
+  border-color: #4caf50;
+}
+
+.student-summary-card.remaining {
+  border-color: #ff9800;
+}
+
+.student-summary-card.eligible {
+  border-color: #2196f3;
+}
+
+/* Settings tab configuration rows */
+.settings-section {
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0.8rem 0;
+}
+
+.setting-item label {
+  font-weight: 600;
+  color: #333;
+}
+
+.setting-item input[type="number"] {
+  width: 140px;
+  padding: 0.55rem 0.65rem;
+  border: 2px solid #d0d7de;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.setting-item input[type="number"]:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.12);
+}
+
+.setting-value {
+  color: #1976d2;
+  font-weight: 700;
+}
+
 .danger-button {
   background: #d32f2f;
   color: white;
