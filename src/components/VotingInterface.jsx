@@ -242,6 +242,9 @@ const VotingInterface = ({ candidates, onVoteSubmit, onCancel, onSecureExit, pos
       </div>
 
       <div className="voting-section">
+        <div className="requirement-note" role="alert">
+          ⚠️ Important: Do not close or refresh the browser until voting is fully completed. Closing early can cause vote data loss.
+        </div>
         <h2>Select {currentPosition?.displayName}</h2>
         
         <div className="candidates-grid">
@@ -338,8 +341,5 @@ const VotingInterface = ({ candidates, onVoteSubmit, onCancel, onSecureExit, pos
     </div>
   );
 };
-        <div className="requirement-note">
-          ⚠️ Please do not close or refresh the browser until the election process is completed. Closing the browser early may result in vote data loss.
-        </div>
 
 export default VotingInterface;

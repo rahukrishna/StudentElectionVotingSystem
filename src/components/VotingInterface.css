@@ -363,14 +363,16 @@
 }
 
 .requirement-note {
-  background: #fff3cd;
-  border: 1px solid #ffeaa7;
-  border-radius: 10px;
-  padding: 1rem;
-  margin: 1rem 0;
+  background: linear-gradient(135deg, #fff4e5, #ffe8cc);
+  border: 2px solid #ffb74d;
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  margin: 0 0 1rem;
   text-align: center;
-  color: #856404;
-  font-weight: 500;
+  color: #8a3b00;
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0 6px 18px rgba(255, 152, 0, 0.2);
 }
 
 /* Button Loading Animation */
