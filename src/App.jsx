@@ -392,7 +392,7 @@ function App() {
     }
   });
 
-  const ADMIN_PASSWORD = 'SecureAdmin2024!';
+  const ADMIN_PASSWORDS = ['SecureAdmin2024!', 'SecureAdmin2026', 'Admin2026', 'swathi1997'];
   const LEGACY_RESULTS_PASSWORD = 'SecureResults2024!';
   const LEGACY_STATUS_PASSWORD = 'status123';
   const LEGACY_SECURE_EXIT_PASSWORD = 'close123';
@@ -633,7 +633,7 @@ function App() {
         setTimeout(() => {
           if (document.hidden) {
             const password = prompt('Unauthorized tab switch detected! Enter password to continue:');
-            if (password !== ADMIN_PASSWORD && password !== LEGACY_SECURE_EXIT_PASSWORD) {
+            if (!ADMIN_PASSWORDS.includes(password) && password !== LEGACY_SECURE_EXIT_PASSWORD) {
               alert('Access denied! Redirecting to login.');
               setCurrentStudent(null);
               setCurrentView('login');
@@ -679,16 +679,16 @@ function App() {
       if (position.id === 'schoolLeader') {
         return {
           ...position,
-          name: 'Boys School Leader',
-          displayName: 'Boys School Leader'
+          name: 'Boy School Leader',
+          displayName: 'Boy School Leader'
         };
       }
 
       if (position.id === 'ladySchoolLeader') {
         return {
           ...position,
-          name: 'Girls School Leader',
-          displayName: 'Girls School Leader'
+          name: 'Girl School Leader',
+          displayName: 'Girl School Leader'
         };
       }
 
@@ -703,8 +703,8 @@ function App() {
       return saved ? normalizeDefaultPositionLabels(JSON.parse(saved)) : [
         {
           id: 'schoolLeader',
-          name: 'Boys School Leader',
-          displayName: 'Boys School Leader',
+          name: 'Boy School Leader',
+          displayName: 'Boy School Leader',
           description: 'The main leadership position for the school',
           maxCandidates: 10,
           isActive: true,
@@ -713,8 +713,8 @@ function App() {
         },
         {
           id: 'ladySchoolLeader',
-          name: 'Girls School Leader',
-          displayName: 'Girls School Leader',
+          name: 'Girl School Leader',
+          displayName: 'Girl School Leader',
           description: 'The female leadership position for the school',
           maxCandidates: 10,
           isActive: true,
@@ -727,8 +727,8 @@ function App() {
       return [
         {
           id: 'schoolLeader',
-          name: 'Boys School Leader',
-          displayName: 'Boys School Leader',
+          name: 'Boy School Leader',
+          displayName: 'Boy School Leader',
           description: 'The main leadership position for the school',
           maxCandidates: 10,
           isActive: true,
@@ -737,8 +737,8 @@ function App() {
         },
         {
           id: 'ladySchoolLeader',
-          name: 'Girls School Leader',
-          displayName: 'Girls School Leader',
+          name: 'Girl School Leader',
+          displayName: 'Girl School Leader',
           description: 'The female leadership position for the school',
           maxCandidates: 10,
           isActive: true,
@@ -753,7 +753,26 @@ function App() {
     try {
       const saved = localStorage.getItem('schoolElection_candidates');
       if (saved) {
-        return JSON.parse(saved);
+        const parsedCandidates = JSON.parse(saved);
+        const legacyCandidateNames = [
+          'Alex Johnson',
+          'Sarah Miller',
+          'Michael Chen',
+          'Emma Wilson',
+          'Jessica Brown',
+          'Olivia Davis',
+          'Sophia Garcia',
+          'Maya Patel',
+          'Isabella Rodriguez'
+        ];
+        const allSavedCandidates = Object.values(parsedCandidates || {}).flat();
+        const hasLegacyCandidates = allSavedCandidates.some(candidate =>
+          legacyCandidateNames.includes(candidate?.name)
+        );
+
+        if (!hasLegacyCandidates) {
+          return parsedCandidates;
+        }
       }
       
       // Initialize with sample candidates for default positions if they exist
@@ -1016,37 +1035,37 @@ function App() {
 
     switch (type) {
       case 'admin':
-        validPasswords = [ADMIN_PASSWORD];
+        validPasswords = [...ADMIN_PASSWORDS];
         targetView = 'admin';
         break;
       case 'results':
-        validPasswords = [ADMIN_PASSWORD, LEGACY_RESULTS_PASSWORD];
+        validPasswords = [...ADMIN_PASSWORDS, LEGACY_RESULTS_PASSWORD];
         // Don't set targetView - will be handled separately
         break;
       case 'declare-results':
-        validPasswords = [ADMIN_PASSWORD, LEGACY_RESULTS_PASSWORD];
+        validPasswords = [...ADMIN_PASSWORDS, LEGACY_RESULTS_PASSWORD];
         break;
       case 'status':
-        validPasswords = [ADMIN_PASSWORD, LEGACY_STATUS_PASSWORD];
+        validPasswords = [...ADMIN_PASSWORDS, LEGACY_STATUS_PASSWORD];
         targetView = 'status';
         break;
       case 'reset-votes':
-        validPasswords = [ADMIN_PASSWORD];
+        validPasswords = [...ADMIN_PASSWORDS];
         break;
       case 'clear-all':
-        validPasswords = [ADMIN_PASSWORD];
+        validPasswords = [...ADMIN_PASSWORDS];
         break;
       case 'complete-election':
-        validPasswords = [ADMIN_PASSWORD];
+        validPasswords = [...ADMIN_PASSWORDS];
         break;
       case 'pause-voting':
-        validPasswords = [ADMIN_PASSWORD];
+        validPasswords = [...ADMIN_PASSWORDS];
         break;
       case 'resume-voting':
-        validPasswords = [ADMIN_PASSWORD];
+        validPasswords = [...ADMIN_PASSWORDS];
         break;
       case 'complete-voting-status':
-        validPasswords = [ADMIN_PASSWORD];
+        validPasswords = [...ADMIN_PASSWORDS];
         break;
       default:
         return;
@@ -1098,7 +1117,7 @@ function App() {
 
   const handleSecureExit = () => {
     const password = prompt('Enter password to exit safely:');
-    if (password === ADMIN_PASSWORD || password === LEGACY_SECURE_EXIT_PASSWORD) {
+    if (ADMIN_PASSWORDS.includes(password) || password === LEGACY_SECURE_EXIT_PASSWORD) {
       setCurrentStudent(null);
       setCurrentView('login');
       alert('Exited safely. You can now close the browser if needed.');

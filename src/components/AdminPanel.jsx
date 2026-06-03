@@ -21,7 +21,7 @@ const AdminPanel = ({
   totalEligibleStudents,
   setTotalEligibleStudents
 }) => {
-  const ADMIN_PASSWORD = 'SecureAdmin2024!';
+  const ADMIN_PASSWORDS = ['SecureAdmin2024!', 'SecureAdmin2026', 'Admin2026', 'swathi1997'];
   const LEGACY_STATUS_PASSWORD = 'status123';
   const safeTotalEligibleStudents = Math.max(1, parseInt(totalEligibleStudents, 10) || 1);
 
@@ -234,7 +234,7 @@ const AdminPanel = ({
 
   const handleVotingStatusLogin = (e) => {
     e.preventDefault();
-    if (votingStatusPassword === ADMIN_PASSWORD || votingStatusPassword === LEGACY_STATUS_PASSWORD) {
+    if (ADMIN_PASSWORDS.includes(votingStatusPassword) || votingStatusPassword === LEGACY_STATUS_PASSWORD) {
       setIsVotingStatusUnlocked(true);
       setShowVotingStatus(false);
       setVotingStatusPassword('');
