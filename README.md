@@ -32,7 +32,8 @@ This project can now run as a native mobile app using Capacitor.
 
 Latest one-click APK download page:
 
-- `https://github.com/rahukrishna/StudentElectionVotingSystem/releases/tag/apk-latest`
+- [Latest APK release page](https://github.com/rahukrishna/StudentElectionVotingSystem/releases/tag/apk-latest)
+- [Direct APK download](https://github.com/rahukrishna/StudentElectionVotingSystem/releases/download/apk-latest/app-debug.apk)
 
 Use these commands:
 

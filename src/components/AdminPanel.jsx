@@ -21,6 +21,10 @@ const AdminPanel = ({
 }) => {
   const ADMIN_PASSWORD = 'SecureAdmin2024!';
   const LEGACY_STATUS_PASSWORD = 'status123';
+  const ELIGIBLE_GRADE_START = 5;
+  const ELIGIBLE_GRADE_END = 10;
+  const STUDENTS_PER_GRADE = 30;
+  const TOTAL_ELIGIBLE_STUDENTS = (ELIGIBLE_GRADE_END - ELIGIBLE_GRADE_START + 1) * STUDENTS_PER_GRADE;
 
   const [activeTab, setActiveTab] = useState('overview');
   const [newCandidate, setNewCandidate] = useState({
@@ -41,7 +45,6 @@ const AdminPanel = ({
   const [showVotingStatus, setShowVotingStatus] = useState(false);
   const [votingStatusPassword, setVotingStatusPassword] = useState('');
   const [isVotingStatusUnlocked, setIsVotingStatusUnlocked] = useState(false);
-  const [showDetailedStats, setShowDetailedStats] = useState(false);
 
   // School info editing state
   const [schoolInfoForm, setSchoolInfoForm] = useState({
@@ -224,39 +227,8 @@ const AdminPanel = ({
     }
   };
 
-  const generateClassWiseStats = () => {
-    const classStats = {};
-    const totalStudentsPerClass = 30;
-    
-    // Initialize all classes (1-10)
-    for (let classNum = 1; classNum <= 10; classNum++) {
-      const classCode = classNum.toString().padStart(2, '0');
-      classStats[classCode] = {
-        className: `Class ${classNum}`,
-        totalStudents: totalStudentsPerClass,
-        votedStudents: 0,
-        percentage: 0,
-        studentIds: []
-      };
-    }
-    
-    // Count voted students per class
-    votedStudents.forEach(studentId => {
-      if (studentId.startsWith('STD')) {
-        const classCode = studentId.substring(3, 5);
-        if (classStats[classCode]) {
-          classStats[classCode].votedStudents++;
-          classStats[classCode].studentIds.push(studentId);
-          classStats[classCode].percentage = 
-            ((classStats[classCode].votedStudents / totalStudentsPerClass) * 100).toFixed(1);
-        }
-      }
-    });
-    
-    return classStats;
-  };
   const getOverallStats = () => {
-    const totalStudents = 300; // 10 classes × 30 students
+    const totalStudents = TOTAL_ELIGIBLE_STUDENTS;
     const totalVoted = votedStudents.length;
     const percentage = ((totalVoted / totalStudents) * 100).toFixed(1);
     
@@ -317,7 +289,7 @@ const AdminPanel = ({
           position: position.displayName,
           votes: Object.values(votes[position.id] || {}).reduce((a, b) => a + b, 0)
         })),
-        participationRate: `${((votedStudents.length / 300) * 100).toFixed(2)}%` // Assuming 300 total students
+        participationRate: `${((votedStudents.length / TOTAL_ELIGIBLE_STUDENTS) * 100).toFixed(2)}%`
       },
       results: positionResults,
       votedStudents: votedStudents.sort()
@@ -1298,7 +1270,7 @@ const AdminPanel = ({
                     <div className="stat-content">
                       <h4>Students Voted</h4>
                       <div className="stat-value">{getOverallStats().totalVoted}</div>
-                      <p>Across all classes (1-10)</p>
+                      <p>Across eligible classes ({ELIGIBLE_GRADE_START}-{ELIGIBLE_GRADE_END})</p>
                     </div>
                   </div>
                   
@@ -1340,70 +1312,17 @@ const AdminPanel = ({
                 </div>
               </div>
 
-              {/* Class-wise Details Toggle */}
               <div className="detailed-stats-section">
                 <div className="section-header">
-                  <h3>🏫 Class-wise Breakdown</h3>
-                  <button 
-                    onClick={() => setShowDetailedStats(!showDetailedStats)}
-                    className="toggle-details-btn"
-                  >
-                    {showDetailedStats ? '🔼 Hide Details' : '🔽 Show Details'}
-                  </button>
+                  <h3>🧮 Student Voting Totals</h3>
                 </div>
-                
-                {showDetailedStats && (
-                  <div className="class-stats-grid">
-                    {Object.entries(generateClassWiseStats()).map(([classCode, stats]) => (
-                      <div key={classCode} className="class-stat-card">
-                        <div className="class-header">
-                          <h4>{stats.className}</h4>
-                          <div className="class-percentage">
-                            {stats.percentage}%
-                          </div>
-                        </div>
-                        <div className="class-stats">
-                          <div className="class-stat">
-                            <span className="stat-label">Voted:</span>
-                            <span className="stat-number">{stats.votedStudents}/{stats.totalStudents}</span>
-                          </div>
-                          <div className="class-progress">
-                            <div className="mini-progress-bar">
-                              <div 
-                                className="mini-progress-fill" 
-                                style={{ width: `${stats.percentage}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                          {stats.studentIds.length > 0 && (
-                            <div className="voted-student-ids">
-                              <strong>Voted Students:</strong>
-                              <div className="student-id-list">
-                                {stats.studentIds.sort().map(id => (
-                                  <span key={id} className="student-id-badge">
-                                    {id}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <p>Total-only view is enabled. Class-wise voted counts are hidden.</p>
               </div>
               
               {/* Quick Actions for Voting Status */}
               <div className="voting-status-actions">
                 <h3>🚀 Quick Actions</h3>
                 <div className="action-buttons">
-                  <button 
-                    onClick={() => setShowDetailedStats(!showDetailedStats)}
-                    className="action-btn primary"
-                  >
-                    {showDetailedStats ? '📊 Summary View' : '📋 Detailed View'}
-                  </button>
                   <button 
                     onClick={exportResults}
                     className="action-btn success"

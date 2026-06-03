@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './LoginModal.css';
 
 const LoginModal = ({ onLogin, onSecureExit, electionCompleted, onViewResults }) => {
+  const [selectedGrade, setSelectedGrade] = useState('5');
+  const [rollNumber, setRollNumber] = useState('');
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onLogin();
+    onLogin({
+      grade: selectedGrade,
+      rollNumber
+    });
   };
 
   return (
@@ -37,9 +43,35 @@ const LoginModal = ({ onLogin, onSecureExit, electionCompleted, onViewResults })
         ) : (
           <>
             <h2>🗳️ Student Login</h2>
-            <p>Click continue to start voting</p>
+            <p>Only students from Class 5 to Class 10 can vote.</p>
             
             <form onSubmit={handleSubmit} className="login-form">
+              <div className="form-group">
+                <label htmlFor="grade">Class</label>
+                <select
+                  id="grade"
+                  value={selectedGrade}
+                  onChange={(e) => setSelectedGrade(e.target.value)}
+                  required
+                >
+                  {[5, 6, 7, 8, 9, 10].map(grade => (
+                    <option key={grade} value={grade}>{`Class ${grade}`}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="rollNumber">Roll Number (optional)</label>
+                <input
+                  id="rollNumber"
+                  type="text"
+                  value={rollNumber}
+                  onChange={(e) => setRollNumber(e.target.value)}
+                  placeholder="Enter roll number"
+                  maxLength={20}
+                />
+              </div>
+
               <button type="submit" className="login-button large">
                 Continue to Vote
               </button>
@@ -48,7 +80,7 @@ const LoginModal = ({ onLogin, onSecureExit, electionCompleted, onViewResults })
             <div className="info-section">
               <h3>Voting Instructions:</h3>
               <ul>
-                <li>Press Continue to enter the voting screen</li>
+                <li>Select class between 5 and 10, then press Continue</li>
                 <li>You must vote for both positions</li>
                 <li>Your vote is anonymous and secure</li>
               </ul>

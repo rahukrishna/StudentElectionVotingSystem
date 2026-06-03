@@ -9,6 +9,11 @@ import Results from './components/Results';
 import LoginModal from './components/LoginModal';
 import ErrorBoundary from './components/ErrorBoundary';
 
+const ELIGIBLE_GRADE_START = 5;
+const ELIGIBLE_GRADE_END = 10;
+const STUDENTS_PER_GRADE = 30;
+const TOTAL_ELIGIBLE_STUDENTS = (ELIGIBLE_GRADE_END - ELIGIBLE_GRADE_START + 1) * STUDENTS_PER_GRADE;
+
 // StatusView Component
 function StatusView({ 
   votedStudents, 
@@ -23,64 +28,10 @@ function StatusView({
   onResumeVoting, 
   schoolInfo 
 }) {
-  const [showDetails, setShowDetails] = useState(false);
-
-  // Calculate class-wise statistics
-  const getClassWiseStats = () => {
-    const classStats = {};
-    
-    // Initialize all classes (1st to 10th)
-    for (let grade = 1; grade <= 10; grade++) {
-      classStats[grade] = {
-        total: 30, // 30 students per class
-        voted: 0,
-        percentage: 0,
-        votedStudentIds: []
-      };
-    }
-
-    // Count voted students by class
-    votedStudents.forEach(studentId => {
-      // Student ID format: STD0XYZ where X is grade (1-9) or STD1XYZ where 1X is grade (10)
-      // For grades 1-9: STD01XX, STD02XX, ..., STD09XX
-      // For grade 10: STD10XX
-      let grade;
-      
-      if (studentId.startsWith('STD10')) {
-        grade = 10;
-      } else if (studentId.startsWith('STD0')) {
-        const gradeChar = studentId.charAt(4); // 5th character (0-indexed)
-        grade = parseInt(gradeChar);
-      }
-      
-      if (grade >= 1 && grade <= 10) {
-        classStats[grade].voted++;
-        classStats[grade].votedStudentIds.push(studentId);
-        classStats[grade].percentage = (classStats[grade].voted / classStats[grade].total) * 100;
-      }
-    });
-
-    return classStats;
-  };
-
-  const classStats = getClassWiseStats();
-
-  // Get class status color based on percentage
-  const getStatusColor = (percentage) => {
-    if (percentage >= 80) return '#27ae60'; // Green - Good
-    if (percentage >= 60) return '#f39c12'; // Orange - Moderate 
-    if (percentage >= 40) return '#e67e22'; // Orange-Red - Low
-    return '#e74c3c'; // Red - Very Low
-  };
-
-  // Get status text
-  const getStatusText = (percentage) => {
-    if (percentage >= 80) return 'Excellent';
-    if (percentage >= 60) return 'Good';
-    if (percentage >= 40) return 'Moderate';
-    if (percentage > 0) return 'Low';
-    return 'No Votes';
-  };
+  const totalVotesCast = positions
+    .filter(pos => pos.isActive)
+    .reduce((sum, position) => sum + Object.values(votes[position.id] || {}).reduce((a, b) => a + b, 0), 0);
+  const participationRate = ((votedStudents.length / TOTAL_ELIGIBLE_STUDENTS) * 100).toFixed(1);
 
   return (
     <div className="status-view">
@@ -101,22 +52,22 @@ function StatusView({
           </div>
           <div className="stat-item">
             <span className="stat-label">Total Votes Cast:</span>
-            <span className="stat-value">{votedStudents.length * 2}</span>
+            <span className="stat-value">{totalVotesCast}</span>
           </div>
           <div className="stat-item">
             <span className="stat-label">Participation Rate:</span>
             <span className="stat-value">
-              {((votedStudents.length / 300) * 100).toFixed(1)}%
+              {participationRate}%
             </span>
           </div>
           <div className="progress-bar">
             <div 
               className="progress-fill" 
-              style={{ width: `${(votedStudents.length / 300) * 100}%` }}
+              style={{ width: `${participationRate}%` }}
             ></div>
           </div>
           <p className="progress-text">
-            {votedStudents.length} out of 300 students have voted
+            {votedStudents.length} out of {TOTAL_ELIGIBLE_STUDENTS} eligible students (Classes {ELIGIBLE_GRADE_START}-{ELIGIBLE_GRADE_END}) have voted
           </p>
         </div>
 
@@ -143,158 +94,23 @@ function StatusView({
           </div>
         </div>
 
-        {/* Class-wise Details Toggle */}
-        <div className="status-card">
-          <div className="details-header">
-            <h3>🏫 Class-wise Voting Details</h3>
-            <button 
-              className="details-toggle-btn"
-              onClick={() => setShowDetails(!showDetails)}
-            >
-              {showDetails ? '▲ Hide Details' : '▼ Show Details'}
-            </button>
-          </div>
-          
-          {showDetails && (
-            <div className="class-details-grid">
-              {Object.entries(classStats).map(([grade, stats]) => (
-                <div 
-                  key={grade} 
-                  className="class-card"
-                  data-status={getStatusText(stats.percentage).toLowerCase()}
-                >
-                  <div className="class-header">
-                    <h4>Class {grade}{grade === '1' ? 'st' : grade === '2' ? 'nd' : grade === '3' ? 'rd' : 'th'}</h4>
-                    <div className="status-badges">
-                      {stats.percentage === 100 && (
-                        <span className="complete-badge">✅ Complete</span>
-                      )}
-                      <span 
-                        className="status-badge"
-                        style={{ backgroundColor: getStatusColor(stats.percentage) }}
-                      >
-                        {getStatusText(stats.percentage)}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="class-stats">
-                    <div className="class-stat-item">
-                      <span>Voted:</span>
-                      <span className="stat-number">{stats.voted}/{stats.total}</span>
-                    </div>
-                    <div className="class-stat-item">
-                      <span>Percentage:</span>
-                      <span 
-                        className="stat-percentage"
-                        style={{ color: getStatusColor(stats.percentage) }}
-                      >
-                        {stats.percentage.toFixed(1)}%
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="class-progress-bar">
-                    <div 
-                      className="class-progress-fill"
-                      style={{ 
-                        width: `${stats.percentage}%`,
-                        backgroundColor: getStatusColor(stats.percentage)
-                      }}
-                    ></div>
-                  </div>
-                  
-                  {stats.votedStudentIds.length > 0 && (
-                    <div className="voted-students">
-                      <details>
-                        <summary>Voted Student IDs ({stats.voted})</summary>
-                        <div className="student-ids">
-                          {stats.votedStudentIds.map(id => (
-                            <span key={id} className="student-id">{id}</span>
-                          ))}
-                        </div>
-                      </details>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Summary Card */}
         <div className="status-card summary-card">
-          <h3>📝 Summary</h3>
+          <h3>📝 Voting Summary</h3>
           <div className="summary-stats">
             <div className="summary-item">
-              <span className="summary-label">Classes with 80%+ participation:</span>
-              <span className="summary-value good">
-                {Object.values(classStats).filter(s => s.percentage >= 80).length}/10
-              </span>
+              <span className="summary-label">Eligible Classes:</span>
+              <span className="summary-value good">{ELIGIBLE_GRADE_START}-{ELIGIBLE_GRADE_END}</span>
             </div>
             <div className="summary-item">
-              <span className="summary-label">Classes with 60%+ participation:</span>
-              <span className="summary-value moderate">
-                {Object.values(classStats).filter(s => s.percentage >= 60).length}/10
-              </span>
+              <span className="summary-label">Total Students Voted:</span>
+              <span className="summary-value moderate">{votedStudents.length}</span>
             </div>
             <div className="summary-item">
-              <span className="summary-label">Classes needing attention (&lt;40%):</span>
-              <span className="summary-value low">
-                {Object.values(classStats).filter(s => s.percentage < 40).length}/10
-              </span>
+              <span className="summary-label">No class-wise split is shown.</span>
+              <span className="summary-value low">Total-only view</span>
             </div>
           </div>
         </div>
-
-        {/* Classes Needing Attention Alert */}
-        {Object.values(classStats).some(s => s.percentage < 40) && (
-          <div className="status-card alert-card">
-            <h3>⚠️ Classes Needing Attention</h3>
-            <div className="alert-content">
-              <p>The following classes have less than 40% participation:</p>
-              <div className="low-participation-classes">
-                {Object.entries(classStats)
-                  .filter(([grade, stats]) => stats.percentage < 40)
-                  .map(([grade, stats]) => (
-                    <div key={grade} className="alert-class">
-                      <span className="alert-class-name">
-                        Class {grade}{grade === '1' ? 'st' : grade === '2' ? 'nd' : grade === '3' ? 'rd' : 'th'}
-                      </span>
-                      <span className="alert-class-stats">
-                        {stats.voted}/30 ({stats.percentage.toFixed(1)}%)
-                      </span>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Top Performing Classes */}
-        {Object.values(classStats).some(s => s.percentage >= 80) && (
-          <div className="status-card success-card">
-            <h3>🏆 Top Performing Classes</h3>
-            <div className="success-content">
-              <p>Excellent participation (80%+ turnout):</p>
-              <div className="high-participation-classes">
-                {Object.entries(classStats)
-                  .filter(([grade, stats]) => stats.percentage >= 80)
-                  .sort(([,a], [,b]) => b.percentage - a.percentage)
-                  .map(([grade, stats]) => (
-                    <div key={grade} className="success-class">
-                      <span className="success-class-name">
-                        Class {grade}{grade === '1' ? 'st' : grade === '2' ? 'nd' : grade === '3' ? 'rd' : 'th'}
-                      </span>
-                      <span className="success-class-stats">
-                        {stats.voted}/30 ({stats.percentage.toFixed(1)}%)
-                      </span>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Voting Control Actions */}
         <div className="status-card admin-controls-card">
@@ -362,9 +178,8 @@ function StatusView({
     const currentDate = new Date().toLocaleDateString();
     const currentTime = new Date().toLocaleTimeString();
     
-    const classStats = getClassWiseStats();
     const totalVoted = votedStudents.length;
-    const totalStudents = 300; // 30 students × 10 classes
+    const totalStudents = TOTAL_ELIGIBLE_STUDENTS;
     const overallPercentage = ((totalVoted / totalStudents) * 100).toFixed(1);
     
     // Calculate vote distribution
@@ -536,31 +351,12 @@ function StatusView({
           `).join('')}
         </div>
 
-        <h2 class="section-title">🏫 Class-wise Participation</h2>
-        <table class="class-stats-table">
-          <thead>
-            <tr>
-              <th>Class</th>
-              <th>Students Voted</th>
-              <th>Participation Rate</th>
-              <th>Progress</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${Object.entries(classStats).map(([grade, stats]) => `
-              <tr>
-                <td><strong>Class ${grade}${grade === '1' ? 'st' : grade === '2' ? 'nd' : grade === '3' ? 'rd' : 'th'}</strong></td>
-                <td>${stats.voted} / ${stats.total}</td>
-                <td><strong>${stats.percentage.toFixed(1)}%</strong></td>
-                <td>
-                  <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${stats.percentage}%"></div>
-                  </div>
-                </td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
+        <h2 class="section-title">🧮 Student Voting Totals</h2>
+        <div class="summary-card">
+          <h3>Total Students Voted</h3>
+          <div class="summary-number">${totalVoted}</div>
+          <p>Eligible group: Classes ${ELIGIBLE_GRADE_START}-${ELIGIBLE_GRADE_END} (${totalStudents} students)</p>
+        </div>
 
         <div class="footer">
           <p><strong>School Election Management System</strong></p>
@@ -1093,8 +889,24 @@ function App() {
   }, [votes]);
 
   const handleStudentLogin = (studentId = '') => {
-    const normalizedStudentId = studentId.trim();
-    const generatedStudentId = normalizedStudentId || `VOTER-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+    let normalizedStudentId = '';
+
+    if (typeof studentId === 'string') {
+      normalizedStudentId = studentId.trim();
+    } else if (studentId && typeof studentId === 'object') {
+      const grade = parseInt(studentId.grade, 10);
+      const rollNumber = (studentId.rollNumber || '').trim().toUpperCase().replace(/\s+/g, '');
+
+      if (Number.isNaN(grade) || grade < ELIGIBLE_GRADE_START || grade > ELIGIBLE_GRADE_END) {
+        alert(`Only classes ${ELIGIBLE_GRADE_START} to ${ELIGIBLE_GRADE_END} are eligible to vote.`);
+        return false;
+      }
+
+      const generatedRollNumber = rollNumber || `AUTO${Date.now().toString().slice(-4)}${Math.random().toString(36).slice(2, 4).toUpperCase()}`;
+      normalizedStudentId = `STD${grade.toString().padStart(2, '0')}-${generatedRollNumber}`;
+    }
+
+    const generatedStudentId = normalizedStudentId || `STD${ELIGIBLE_GRADE_START}-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
 
     if (normalizedStudentId && votedStudents.includes(normalizedStudentId)) {
       alert('This student has already voted!');
@@ -1128,6 +940,35 @@ function App() {
     setVotedStudents(prev => [...prev, currentStudent]);
     setCurrentStudent(null);
     setCurrentView('login');
+
+    try {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) {
+        const audioContext = new AudioContextClass();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        const now = audioContext.currentTime;
+
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, now);
+        oscillator.frequency.exponentialRampToValueAtTime(1320, now + 0.12);
+
+        gainNode.gain.setValueAtTime(0.0001, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.12, now + 0.02);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.24);
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        oscillator.start(now);
+        oscillator.stop(now + 0.24);
+
+        oscillator.onended = () => {
+          audioContext.close().catch(() => {});
+        };
+      }
+    } catch (error) {
+      console.warn('Vote completion beep could not be played:', error);
+    }
     
     alert('Vote submitted successfully! Thank you for voting.');
   };
