@@ -59,6 +59,7 @@ jobs:
       - name: Build Android debug APK
         working-directory: android
         run: |
+          sed -i 's/\r$//' gradlew
           chmod +x gradlew
           ./gradlew assembleDebug
 
