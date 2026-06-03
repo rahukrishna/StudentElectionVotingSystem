@@ -587,6 +587,11 @@ function App() {
   const [currentView, setCurrentView] = useState('login');
   const [currentStudent, setCurrentStudent] = useState(null);
 
+  const ADMIN_PASSWORD = 'SecureAdmin2024!';
+  const LEGACY_RESULTS_PASSWORD = 'SecureResults2024!';
+  const LEGACY_STATUS_PASSWORD = 'status123';
+  const LEGACY_SECURE_EXIT_PASSWORD = 'close123';
+
   // Password dialog states
   const [passwordDialog, setPasswordDialog] = useState({
     show: false,
@@ -814,7 +819,7 @@ function App() {
         setTimeout(() => {
           if (document.hidden) {
             const password = prompt('Unauthorized tab switch detected! Enter password to continue:');
-            if (password !== 'close123') {
+            if (password !== ADMIN_PASSWORD && password !== LEGACY_SECURE_EXIT_PASSWORD) {
               alert('Access denied! Redirecting to login.');
               setCurrentStudent(null);
               setCurrentView('login');
@@ -851,15 +856,41 @@ function App() {
     };
   }, [currentStudent, currentView]);
 
+  const normalizeDefaultPositionLabels = (positionList) => {
+    if (!Array.isArray(positionList)) {
+      return positionList;
+    }
+
+    return positionList.map(position => {
+      if (position.id === 'schoolLeader') {
+        return {
+          ...position,
+          name: 'Boys School Leader',
+          displayName: 'Boys School Leader'
+        };
+      }
+
+      if (position.id === 'ladySchoolLeader') {
+        return {
+          ...position,
+          name: 'Girls School Leader',
+          displayName: 'Girls School Leader'
+        };
+      }
+
+      return position;
+    });
+  };
+
   // Positions management state
   const [positions, setPositions] = useState(() => {
     try {
       const saved = localStorage.getItem('schoolElection_positions');
-      return saved ? JSON.parse(saved) : [
+      return saved ? normalizeDefaultPositionLabels(JSON.parse(saved)) : [
         {
           id: 'schoolLeader',
-          name: 'School Leader',
-          displayName: 'School Leader',
+          name: 'Boys School Leader',
+          displayName: 'Boys School Leader',
           description: 'The main leadership position for the school',
           maxCandidates: 10,
           isActive: true,
@@ -868,8 +899,8 @@ function App() {
         },
         {
           id: 'ladySchoolLeader',
-          name: 'Lady School Leader',
-          displayName: 'Lady School Leader',
+          name: 'Girls School Leader',
+          displayName: 'Girls School Leader',
           description: 'The female leadership position for the school',
           maxCandidates: 10,
           isActive: true,
@@ -882,8 +913,8 @@ function App() {
       return [
         {
           id: 'schoolLeader',
-          name: 'School Leader',
-          displayName: 'School Leader',
+          name: 'Boys School Leader',
+          displayName: 'Boys School Leader',
           description: 'The main leadership position for the school',
           maxCandidates: 10,
           isActive: true,
@@ -892,8 +923,8 @@ function App() {
         },
         {
           id: 'ladySchoolLeader',
-          name: 'Lady School Leader',
-          displayName: 'Lady School Leader',
+          name: 'Girls School Leader',
+          displayName: 'Girls School Leader',
           description: 'The female leadership position for the school',
           maxCandidates: 10,
           isActive: true,
@@ -1061,12 +1092,16 @@ function App() {
     }
   }, [votes]);
 
-  const handleStudentLogin = (studentId) => {
-    if (votedStudents.includes(studentId)) {
+  const handleStudentLogin = (studentId = '') => {
+    const normalizedStudentId = studentId.trim();
+    const generatedStudentId = normalizedStudentId || `VOTER-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+
+    if (normalizedStudentId && votedStudents.includes(normalizedStudentId)) {
       alert('This student has already voted!');
       return false;
     }
-    setCurrentStudent(studentId);
+
+    setCurrentStudent(generatedStudentId);
     setCurrentView('voting');
     return true;
   };
@@ -1136,48 +1171,48 @@ function App() {
 
   const handlePasswordSubmit = () => {
     const { type, password } = passwordDialog;
-    let correctPassword = '';
+    let validPasswords = [];
     let targetView = '';
 
     switch (type) {
       case 'admin':
-        correctPassword = 'SecureAdmin2024!';
+        validPasswords = [ADMIN_PASSWORD];
         targetView = 'admin';
         break;
       case 'results':
-        correctPassword = 'SecureResults2024!';
+        validPasswords = [ADMIN_PASSWORD, LEGACY_RESULTS_PASSWORD];
         // Don't set targetView - will be handled separately
         break;
       case 'declare-results':
-        correctPassword = 'SecureResults2024!';
+        validPasswords = [ADMIN_PASSWORD, LEGACY_RESULTS_PASSWORD];
         break;
       case 'status':
-        correctPassword = 'status123';
+        validPasswords = [ADMIN_PASSWORD, LEGACY_STATUS_PASSWORD];
         targetView = 'status';
         break;
       case 'reset-votes':
-        correctPassword = 'SecureAdmin2024!';
+        validPasswords = [ADMIN_PASSWORD];
         break;
       case 'clear-all':
-        correctPassword = 'SecureAdmin2024!';
+        validPasswords = [ADMIN_PASSWORD];
         break;
       case 'complete-election':
-        correctPassword = 'SecureAdmin2024!';
+        validPasswords = [ADMIN_PASSWORD];
         break;
       case 'pause-voting':
-        correctPassword = 'SecureAdmin2024!';
+        validPasswords = [ADMIN_PASSWORD];
         break;
       case 'resume-voting':
-        correctPassword = 'SecureAdmin2024!';
+        validPasswords = [ADMIN_PASSWORD];
         break;
       case 'complete-voting-status':
-        correctPassword = 'SecureAdmin2024!';
+        validPasswords = [ADMIN_PASSWORD];
         break;
       default:
         return;
     }
 
-    if (password === correctPassword) {
+    if (validPasswords.includes(password)) {
       setPasswordDialog({ show: false, type: '', password: '', error: '' });
       
       if (targetView) {
@@ -1223,7 +1258,7 @@ function App() {
 
   const handleSecureExit = () => {
     const password = prompt('Enter password to exit safely:');
-    if (password === 'close123') {
+    if (password === ADMIN_PASSWORD || password === LEGACY_SECURE_EXIT_PASSWORD) {
       setCurrentStudent(null);
       setCurrentView('login');
       alert('Exited safely. You can now close the browser if needed.');
@@ -1813,7 +1848,7 @@ function App() {
         {/* Protection Mode Indicator */}
         {(currentStudent || currentView === 'voting') && (
           <div className="protection-indicator">
-            🔒 Secure Voting Mode - Password: close123
+            🔒 Secure Voting Mode - Admin password required
           </div>
         )}
         

@@ -18,18 +18,25 @@ const AdminPanel = ({
   setSchoolInfo,
   positions,
   setPositions
-}) => {const [activeTab, setActiveTab] = useState('overview');  const [newCandidate, setNewCandidate] = useState({
+}) => {
+  const ADMIN_PASSWORD = 'SecureAdmin2024!';
+  const LEGACY_STATUS_PASSWORD = 'status123';
+
+  const [activeTab, setActiveTab] = useState('overview');
+  const [newCandidate, setNewCandidate] = useState({
     name: '',
     grade: '',
     position: positions.find(pos => pos.isActive)?.id || 'schoolLeader',
     symbol: ''
   });
-  const [editingCandidate, setEditingCandidate] = useState(null);  const [editForm, setEditForm] = useState({
+  const [editingCandidate, setEditingCandidate] = useState(null);
+  const [editForm, setEditForm] = useState({
     name: '',
     grade: '',
     position: '',
     symbol: ''
-  });  const [showExportModal, setShowExportModal] = useState(false);
+  });
+  const [showExportModal, setShowExportModal] = useState(false);
   const [exportFormat, setExportFormat] = useState('json');
   const [showVotingStatus, setShowVotingStatus] = useState(false);
   const [votingStatusPassword, setVotingStatusPassword] = useState('');
@@ -206,7 +213,7 @@ const AdminPanel = ({
 
   const handleVotingStatusLogin = (e) => {
     e.preventDefault();
-    if (votingStatusPassword === 'status123') {
+    if (votingStatusPassword === ADMIN_PASSWORD || votingStatusPassword === LEGACY_STATUS_PASSWORD) {
       setIsVotingStatusUnlocked(true);
       setShowVotingStatus(false);
       setVotingStatusPassword('');
@@ -628,7 +635,7 @@ const AdminPanel = ({
 
         ${positions.map(position => `
           <div class="section">
-            <h2 class="section-title">${position.displayName === 'Lady School Leader' ? '👸' : '👑'} ${position.displayName} Candidates</h2>
+            <h2 class="section-title">${position.id === 'ladySchoolLeader' ? '👸' : position.id === 'schoolLeader' ? '👦' : '👑'} ${position.displayName} Candidates</h2>
             ${(candidates[position.id] || []).length > 0 ? `
               <table class="candidates-table">
                 <thead>
@@ -1153,8 +1160,8 @@ const AdminPanel = ({
                 {positions.filter(pos => pos.isActive).map(position => (
                   <div key={position.id} className="position-section">
                     <h3>
-                      {position.id === 'schoolLeader' ? '👑' : 
-                       position.id === 'ladySchoolLeader' ? '�' : '🏛️'} {position.displayName} Candidates ({(candidates[position.id] || []).length})
+                      {position.id === 'schoolLeader' ? '👦' : 
+                       position.id === 'ladySchoolLeader' ? '👧' : '🏛️'} {position.displayName} Candidates ({(candidates[position.id] || []).length})
                     </h3>
                     <div className="candidates-grid">
                       {(candidates[position.id] || []).map(candidate => (
@@ -1607,7 +1614,7 @@ const AdminPanel = ({
                 </form>
                 
                 <div className="password-hint">
-                  <p><strong>Password:</strong> status123</p>
+                  <p><strong>Password:</strong> Use admin password</p>
                 </div>
               </div>
             </div>

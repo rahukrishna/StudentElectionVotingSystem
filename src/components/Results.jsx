@@ -143,6 +143,33 @@ const Results = ({ candidates, votes, positions, totalVotedStudents, electionCom
     return { allResolved, hasResults, hasTies };
   };
 
+  const getUnresolvedTies = () => {
+    const activePositions = positions?.filter(pos => pos.isActive) || [];
+
+    return activePositions
+      .map(position => {
+        const { winnerIds, maxVotes } = getWinner(position.id);
+        const isTie = winnerIds.length > 1 && maxVotes > 0;
+        const tieState = tieBreaker[position.id];
+
+        if (!isTie || tieState?.decided) {
+          return null;
+        }
+
+        const tiedCandidates = (candidates[position.id] || []).filter(candidate =>
+          winnerIds.includes(candidate.id)
+        );
+
+        return {
+          position,
+          maxVotes,
+          tiedCandidates,
+          tieState: tieState || null
+        };
+      })
+      .filter(Boolean);
+  };
+
   // Export results as CSV
   const exportResults = () => {
     const activePositions = positions?.filter(pos => pos.isActive) || [];
@@ -529,6 +556,7 @@ const Results = ({ candidates, votes, positions, totalVotedStudents, electionCom
         {/* Election completed but results not yet published */}
         {electionCompleted && !resultsPublished && (() => {
           const { allResolved, hasResults, hasTies } = getFinalResultsStatus();
+          const unresolvedTies = getUnresolvedTies();
           
           return (
             <div className="declare-results-interface">
@@ -588,6 +616,145 @@ const Results = ({ candidates, votes, positions, totalVotedStudents, electionCom
                     </div>
                   )}
                 </div>
+
+                {unresolvedTies.length > 0 && (
+                  <div className="results-content">
+                    {unresolvedTies.map(({ position, maxVotes, tiedCandidates, tieState }) => {
+                      const wheelColors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c'];
+                      const segmentAngle = 360 / tiedCandidates.length;
+
+                      return (
+                        <div key={position.id} className="position-results">
+                          <div className="position-header">
+                            <h2 className="position-title">{position.emoji || '⚖️'} {position.displayName} Tie-Breaker</h2>
+                            <div className="position-stats">
+                              <span className="total-votes">Tied at {maxVotes} votes each</span>
+                            </div>
+                          </div>
+
+                          <div className="tie-breaker-section">
+                            <div className="tie-notice">⚖️ Tie detected - Resolution required</div>
+                            <div className="tie-candidates-list">
+                              {tiedCandidates.map(candidate => candidate.name).join(' , ')}
+                            </div>
+
+                            {!tieState?.show && (
+                              <button
+                                className="tie-breaker-btn"
+                                onClick={() => handleTieBreakerStart(position.id)}
+                              >
+                                Start Tie-Breaker
+                              </button>
+                            )}
+
+                            {tieState?.show && !tieState?.passwordAccepted && (
+                              <div className="tie-breaker-auth">
+                                <div className="password-hint">Admin authentication required</div>
+                                <input
+                                  type="password"
+                                  className="tie-breaker-input"
+                                  placeholder="Enter admin password"
+                                  value={tieState?.password || ''}
+                                  onChange={(e) => handlePasswordChange(position.id, e.target.value)}
+                                />
+                                <button
+                                  className="tie-breaker-btn"
+                                  onClick={() => handlePasswordSubmit(position.id)}
+                                >
+                                  Verify Password
+                                </button>
+                                {tieState?.error && (
+                                  <div className="tie-breaker-error">{tieState.error}</div>
+                                )}
+                              </div>
+                            )}
+
+                            {tieState?.passwordAccepted && !tieState?.method && !tieState?.decided && (
+                              <div className="tie-breaker-method-selection">
+                                <div className="method-instructions">Choose tie-breaker method</div>
+                                <div className="method-options">
+                                  <button
+                                    className="method-btn manual-btn"
+                                    onClick={() => handleTieBreakerMethodSelect(position.id, 'manual')}
+                                  >
+                                    👨‍⚖️ Manual Selection
+                                    <span className="method-desc">Admin selects winner directly</span>
+                                  </button>
+                                  <button
+                                    className="method-btn wheel-btn"
+                                    onClick={() => handleTieBreakerMethodSelect(position.id, 'wheel')}
+                                  >
+                                    🎡 Spinning Wheel
+                                    <span className="method-desc">Random selection from tied candidates</span>
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+
+                            {tieState?.passwordAccepted && tieState?.method === 'manual' && !tieState?.decided && (
+                              <div className="tie-breaker-vote">
+                                <div className="tie-breaker-instructions">Select the winner:</div>
+                                <div className="tie-breaker-candidates">
+                                  {tiedCandidates.map(candidate => (
+                                    <button
+                                      key={candidate.id}
+                                      className="tie-breaker-candidate-btn"
+                                      onClick={() => handleTieBreakerVote(position.id, candidate.id)}
+                                    >
+                                      {candidate.symbol || '🏆'} {candidate.name}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {tieState?.passwordAccepted && tieState?.method === 'wheel' && !tieState?.decided && (
+                              <div className="spinning-wheel-section">
+                                <div className="wheel-instructions">Spin to determine the winner</div>
+                                <div className="wheel-container">
+                                  <div className="wheel-pointer">▼</div>
+                                  <div className={`spinning-wheel ${tieState?.spinning ? 'spinning' : ''}`}>
+                                    {tiedCandidates.map((candidate, index) => {
+                                      const rotation = index * segmentAngle;
+                                      return (
+                                        <div
+                                          key={candidate.id}
+                                          className="wheel-segment"
+                                          style={{
+                                            transform: `rotate(${rotation}deg)`,
+                                            backgroundColor: wheelColors[index % wheelColors.length]
+                                          }}
+                                        >
+                                          <span className="wheel-text">{candidate.name}</span>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                                <button
+                                  className="spin-btn"
+                                  onClick={() => handleSpinWheel(position.id, tiedCandidates)}
+                                  disabled={tieState?.spinning}
+                                >
+                                  {tieState?.spinning ? 'Spinning...' : 'Spin Wheel'}
+                                </button>
+                                {tieState?.spinning && (
+                                  <div className="spinning-status">Determining winner...</div>
+                                )}
+                              </div>
+                            )}
+
+                            {tieState?.decided && (
+                              <div className="spin-result">
+                                ✅ Winner selected: {tiedCandidates.find(candidate => candidate.id === tieState.winnerId)?.name || 'Unknown'}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
                 
                 {hasResults && (
                   <div className="declare-results-actions">
