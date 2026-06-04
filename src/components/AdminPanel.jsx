@@ -10,6 +10,7 @@ const AdminPanel = ({
   votedStudents, 
   onResetVotes, 
   onClearAllData,
+  onRestoreFromFirebase,
   onDebugStorage,
   onBack,
   availableSymbols,
@@ -1276,6 +1277,17 @@ const AdminPanel = ({
                   </button>
                   <button onClick={onClearAllData} className="danger-button">
                     🗑️ Clear ALL Data
+                  </button>
+                </div>
+                <div className="backup-restore-section" style={{marginTop:'1rem', padding:'1rem', background:'#e8f5e9', borderRadius:'10px', border:'2px solid #4caf50'}}>
+                  <h4 style={{margin:'0 0 0.5rem 0', color:'#2e7d32'}}>☁️ Firebase Backup &amp; Restore</h4>
+                  <p style={{margin:'0 0 0.75rem 0', fontSize:'0.9rem', color:'#388e3c'}}>Data is auto-backed up to Firebase after every vote. Use restore if local data is lost.</p>
+                  <button
+                    onClick={onRestoreFromFirebase}
+                    className="reset-button"
+                    style={{background:'linear-gradient(135deg,#4caf50,#66bb6a)', color:'white', border:'none', width:'100%'}}
+                  >
+                    ☁️ Restore from Firebase Backup
                   </button>
                 </div>
                 <div className="debug-section">

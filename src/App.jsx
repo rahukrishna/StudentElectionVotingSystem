@@ -1,13 +1,14 @@
 // School Election Voting System - Main Application Component
 // Developed for educational institutions to manage digital voting
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import VotingInterface from './components/VotingInterface';
 import AdminPanel from './components/AdminPanel';
 import Results from './components/Results';
 import LoginModal from './components/LoginModal';
 import ErrorBoundary from './components/ErrorBoundary';
+import { saveBackupToFirebase, loadBackupFromFirebase } from './firebase';
 
 const DEFAULT_TOTAL_ELIGIBLE_STUDENTS = 174;
 
@@ -959,6 +960,22 @@ function App() {
     setCurrentStudent(null);
     setCurrentView('login');
 
+    // Auto-backup to Firebase after every vote
+    setTimeout(() => {
+      setVotes(currentVotes => {
+        setVotedStudents(currentVotedStudents => {
+          saveBackupToFirebase({
+            votes: currentVotes,
+            votedStudents: currentVotedStudents,
+            electionCompleted: false,
+            resultsPublished: false
+          }).catch(() => {});
+          return currentVotedStudents;
+        });
+        return currentVotes;
+      });
+    }, 500);
+
     try {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (AudioContextClass) {
@@ -1146,6 +1163,36 @@ function App() {
     });
   };
 
+  // Restore election data from Firebase backup
+  const handleRestoreFromFirebase = async () => {
+    if (!window.confirm('⚠️ This will REPLACE all current election data with the Firebase backup. Are you sure?')) return;
+    const result = await loadBackupFromFirebase();
+    if (!result.success) {
+      alert('❌ No backup found in Firebase or connection failed: ' + result.error);
+      return;
+    }
+    const data = result.data;
+    if (data.cleared) {
+      alert('ℹ️ The Firebase backup is an empty/cleared state. No votes to restore.');
+      return;
+    }
+    try {
+      if (data.votes) {
+        setVotes(data.votes);
+        localStorage.setItem('schoolElection_votes', JSON.stringify(data.votes));
+      }
+      if (data.votedStudents) {
+        setVotedStudents(data.votedStudents);
+        localStorage.setItem('schoolElection_votedStudents', JSON.stringify(data.votedStudents));
+      }
+      if (typeof data.electionCompleted === 'boolean') setElectionCompleted(data.electionCompleted);
+      if (typeof data.resultsPublished === 'boolean') setResultsPublished(data.resultsPublished);
+      alert(`✅ Backup restored successfully!\n\nStudents voted: ${(data.votedStudents || []).length}\nLast backup: ${data.lastBackupTime || 'Unknown'}`);
+    } catch (error) {
+      alert('❌ Restore failed: ' + error.message);
+    }
+  };
+
   const executeResetVotes = () => {
     if (window.confirm('Are you sure you want to reset all votes? This action cannot be undone.')) {
       // Clear localStorage
@@ -1240,6 +1287,15 @@ function App() {
           setResultsPublished(false);
           setTieBreakerResults({});
           setTotalEligibleStudents(DEFAULT_TOTAL_ELIGIBLE_STUDENTS);
+
+          // Clear Firebase backup when all data is cleared
+          saveBackupToFirebase({
+            votes: defaultVotes,
+            votedStudents: [],
+            electionCompleted: false,
+            resultsPublished: false,
+            cleared: true
+          }).catch(() => {});
           
           alert('✅ All election data has been cleared and reset to defaults! Voting is now enabled.');
         } catch (error) {
@@ -1865,6 +1921,7 @@ function App() {
               votedStudents={votedStudents}
               onResetVotes={resetVotes}
               onClearAllData={clearAllData}
+              onRestoreFromFirebase={handleRestoreFromFirebase}
               onDebugStorage={debugLocalStorage}
               onBack={() => setCurrentView('login')}
               availableSymbols={availableSymbols}
