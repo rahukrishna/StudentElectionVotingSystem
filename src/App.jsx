@@ -1,14 +1,14 @@
 // School Election Voting System - Main Application Component
 // Developed for educational institutions to manage digital voting
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import VotingInterface from './components/VotingInterface';
 import AdminPanel from './components/AdminPanel';
 import Results from './components/Results';
 import LoginModal from './components/LoginModal';
 import ErrorBoundary from './components/ErrorBoundary';
-import { saveBackupToFirebase, loadBackupFromFirebase } from './firebase';
+import { saveBackupToFirebase, loadBackupFromFirebase, initFirebaseAutoResync } from './firebase';
 
 const DEFAULT_TOTAL_ELIGIBLE_STUDENTS = 174;
 
@@ -923,6 +923,11 @@ function App() {
     }
   }, [votes]);
 
+  useEffect(() => {
+    const cleanup = initFirebaseAutoResync();
+    return cleanup;
+  }, []);
+
   const handleStudentLogin = (studentId = '') => {
     const normalizedStudentId = typeof studentId === 'string' ? studentId.trim() : '';
     const generatedStudentId = normalizedStudentId || `VOTER-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
@@ -940,41 +945,36 @@ function App() {
   const handleVoteSubmit = (formattedVotes) => {
     if (!currentStudent) return;
 
-    // Record the votes for each position
-    setVotes(prevVotes => {
-      const newVotes = { ...prevVotes };
-      
-      Object.entries(formattedVotes).forEach(([positionId, candidateId]) => {
-        if (!newVotes[positionId]) {
-          newVotes[positionId] = {};
-        }
-        const candidateIdInt = parseInt(candidateId);
-        newVotes[positionId][candidateIdInt] = (newVotes[positionId][candidateIdInt] || 0) + 1;
-      });
-      
-      return newVotes;
+    const updatedVotes = { ...votes };
+
+    Object.entries(formattedVotes).forEach(([positionId, candidateId]) => {
+      if (!updatedVotes[positionId]) {
+        updatedVotes[positionId] = {};
+      }
+      const candidateIdInt = parseInt(candidateId, 10);
+      updatedVotes[positionId][candidateIdInt] = (updatedVotes[positionId][candidateIdInt] || 0) + 1;
     });
 
+    const updatedVotedStudents = [...votedStudents, currentStudent];
+
+    // Record the votes for each position
+    setVotes(updatedVotes);
+
     // Mark student as voted
-    setVotedStudents(prev => [...prev, currentStudent]);
+    setVotedStudents(updatedVotedStudents);
     setCurrentStudent(null);
     setCurrentView('login');
 
     // Auto-backup to Firebase after every vote
-    setTimeout(() => {
-      setVotes(currentVotes => {
-        setVotedStudents(currentVotedStudents => {
-          saveBackupToFirebase({
-            votes: currentVotes,
-            votedStudents: currentVotedStudents,
-            electionCompleted: false,
-            resultsPublished: false
-          }).catch(() => {});
-          return currentVotedStudents;
-        });
-        return currentVotes;
-      });
-    }, 500);
+    saveBackupToFirebase({
+      votes: updatedVotes,
+      votedStudents: updatedVotedStudents,
+      candidates,
+      electionCompleted,
+      resultsPublished,
+      tieBreakerResults,
+      totalEligibleStudents
+    }).catch(() => {});
 
     try {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
