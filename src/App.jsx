@@ -928,7 +928,17 @@ function App() {
     return cleanup;
   }, []);
 
+  const safeTotalEligibleStudents = Math.max(
+    1,
+    parseInt(totalEligibleStudents, 10) || DEFAULT_TOTAL_ELIGIBLE_STUDENTS
+  );
+
   const handleStudentLogin = (studentId = '') => {
+    if (votedStudents.length >= safeTotalEligibleStudents) {
+      alert(`Voting limit reached! Only ${safeTotalEligibleStudents} students are eligible to vote.`);
+      return false;
+    }
+
     const normalizedStudentId = typeof studentId === 'string' ? studentId.trim() : '';
     const generatedStudentId = normalizedStudentId || `VOTER-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
 
@@ -944,6 +954,13 @@ function App() {
 
   const handleVoteSubmit = (formattedVotes) => {
     if (!currentStudent) return;
+
+    if (votedStudents.length >= safeTotalEligibleStudents) {
+      alert(`Voting limit reached! Only ${safeTotalEligibleStudents} students are eligible to vote.`);
+      setCurrentStudent(null);
+      setCurrentView('login');
+      return;
+    }
 
     const updatedVotes = { ...votes };
 
