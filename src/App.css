@@ -193,7 +193,7 @@ body.voting-protected * {
 .status-view {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 3.5rem 2rem 2rem;
   animation: fadeIn 0.5s ease-out;
 }
 
@@ -686,6 +686,10 @@ body.voting-protected * {
 
 .summary-value {
   align-self: center;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
   white-space: nowrap;
   font-weight: 800 !important;
   font-size: 1.3rem !important;
@@ -1409,6 +1413,10 @@ body.voting-protected * {
     width: fit-content;
     max-width: 100%;
     align-self: center;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
   }
 
   .summary-label {
