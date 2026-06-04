@@ -30,7 +30,7 @@ const VotingInterface = ({ candidates, onVoteSubmit, onCancel, onSecureExit, pos
     // Show indicator
     setTimeout(() => indicator.classList.add('show'), 100);
     
-    // Hide and remove indicator
+    // Hide and remove indicator quickly so it doesn't block candidate cards.
     setTimeout(() => {
       indicator.classList.remove('show');
       setTimeout(() => {
@@ -38,7 +38,7 @@ const VotingInterface = ({ candidates, onVoteSubmit, onCancel, onSecureExit, pos
           document.body.removeChild(indicator);
         }
       }, 300);
-    }, 1500);
+    }, 700);
   };
 
   // Function to scroll to the start of the voting section so heading + candidates are visible
