@@ -1247,6 +1247,19 @@ function App() {
       
       setVotes(updatedVotes);
       
+      // Sync the reset-votes state to Firebase as well
+      saveBackupToFirebase({
+        votes: updatedVotes,
+        votedStudents: [],
+        electionCompleted: false,
+        resultsPublished: false,
+        tieBreakerResults: {},
+        candidates,
+        positions,
+        schoolInfo,
+        totalEligibleStudents
+      }).catch(() => {});
+
       alert('All votes have been reset successfully! Voting is now enabled.');
     }
   };
