@@ -382,6 +382,18 @@ function StatusView({
 function App() {
   const [currentView, setCurrentView] = useState('login');
   const [currentStudent, setCurrentStudent] = useState(null);
+  const [electionStarted, setElectionStarted] = useState(() => {
+    try {
+      const saved = localStorage.getItem('schoolElection_started');
+      return saved ? JSON.parse(saved) : false;
+    } catch (error) {
+      console.error('Error loading election started state:', error);
+      return false;
+    }
+  });
+  const [isStartingElection, setIsStartingElection] = useState(false);
+  const [startCountdown, setStartCountdown] = useState(null);
+  const [electionStartMessage, setElectionStartMessage] = useState('');
   const [totalEligibleStudents, setTotalEligibleStudents] = useState(() => {
     try {
       const saved = localStorage.getItem('schoolElection_totalEligibleStudents');
@@ -526,6 +538,15 @@ function App() {
       console.error('Error saving voting pause status:', error);
     }
   }, [votingPaused]);
+
+  // Save election started state to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('schoolElection_started', JSON.stringify(electionStarted));
+    } catch (error) {
+      console.error('Error saving election started state:', error);
+    }
+  }, [electionStarted]);
 
   // Save eligible students configuration to localStorage
   useEffect(() => {
@@ -933,7 +954,100 @@ function App() {
     parseInt(totalEligibleStudents, 10) || DEFAULT_TOTAL_ELIGIBLE_STUDENTS
   );
 
+  useEffect(() => {
+    // Backward-compatibility: if votes already exist from older sessions,
+    // treat election as started.
+    if (votedStudents.length > 0 && !electionStarted) {
+      setElectionStarted(true);
+    }
+  }, [votedStudents, electionStarted]);
+
+  const executeStartElection = () => {
+    if (isStartingElection) {
+      return;
+    }
+
+    setElectionStartMessage('');
+    setIsStartingElection(true);
+
+    const startAfterCountdown = (count) => {
+      if (count > 0) {
+        setStartCountdown(count);
+        setTimeout(() => startAfterCountdown(count - 1), 900);
+        return;
+      }
+
+      const resetVotes = {};
+      positions.forEach(position => {
+        resetVotes[position.id] = {};
+        (candidates[position.id] || []).forEach(candidate => {
+          resetVotes[position.id][candidate.id] = 0;
+        });
+      });
+
+      setVotes(resetVotes);
+      setVotedStudents([]);
+      setElectionCompleted(false);
+      setResultsPublished(false);
+      setTieBreakerResults({});
+      setVotingPaused(false);
+      setCurrentStudent(null);
+      setCurrentView('login');
+      setElectionStarted(true);
+      setStartCountdown(null);
+      setIsStartingElection(false);
+      setElectionStartMessage('Election started. You can now continue to vote.');
+
+      // Voice-only start notification.
+      try {
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance('Election has been started');
+          utterance.rate = 1;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(utterance);
+        }
+      } catch (error) {
+        console.warn('Election start voice notification could not be played:', error);
+      }
+
+      saveBackupToFirebase({
+        votes: resetVotes,
+        votedStudents: [],
+        candidates,
+        positions,
+        schoolInfo,
+        electionCompleted: false,
+        resultsPublished: false,
+        tieBreakerResults: {},
+        totalEligibleStudents,
+        electionStarted: true
+      }).catch(() => {});
+
+      setTimeout(() => {
+        setElectionStartMessage('');
+      }, 3000);
+    };
+
+    startAfterCountdown(3);
+  };
+
+  const handleStartElection = () => {
+    setPasswordDialog({
+      show: true,
+      type: 'start-election',
+      password: '',
+      error: ''
+    });
+  };
+
   const handleStudentLogin = (studentId = '') => {
+    if (!electionStarted && votedStudents.length === 0) {
+      alert('Please click Start Election before allowing students to vote.');
+      return false;
+    }
+
     if (votedStudents.length >= safeTotalEligibleStudents) {
       alert(`Voting limit reached! Only ${safeTotalEligibleStudents} students are eligible to vote.`);
       return false;
@@ -990,7 +1104,8 @@ function App() {
       electionCompleted,
       resultsPublished,
       tieBreakerResults,
-      totalEligibleStudents
+      totalEligibleStudents,
+      electionStarted: true
     }).catch(() => {});
 
     try {
@@ -1101,6 +1216,9 @@ function App() {
       case 'complete-voting-status':
         validPasswords = [...ADMIN_PASSWORDS];
         break;
+      case 'start-election':
+        validPasswords = [...ADMIN_PASSWORDS];
+        break;
       default:
         return;
     }
@@ -1135,6 +1253,8 @@ function App() {
         executeResumeVoting();
       } else if (type === 'complete-voting-status') {
         executeCompleteVotingFromStatus();
+      } else if (type === 'start-election') {
+        executeStartElection();
       }
     } else {
       setPasswordDialog(prev => ({
@@ -1204,6 +1324,7 @@ function App() {
       }
       if (typeof data.electionCompleted === 'boolean') setElectionCompleted(data.electionCompleted);
       if (typeof data.resultsPublished === 'boolean') setResultsPublished(data.resultsPublished);
+      if (typeof data.electionStarted === 'boolean') setElectionStarted(data.electionStarted);
       alert(`✅ Backup restored successfully!\n\nStudents voted: ${(data.votedStudents || []).length}\nLast backup: ${data.lastBackupTime || 'Unknown'}`);
     } catch (error) {
       alert('❌ Restore failed: ' + error.message);
@@ -1234,6 +1355,10 @@ function App() {
       setElectionCompleted(false);
       setResultsPublished(false);
       setTieBreakerResults({});
+      setElectionStarted(false);
+      setStartCountdown(null);
+      setIsStartingElection(false);
+      setElectionStartMessage('');
       
       // Reinitialize vote counts for all candidates
       const updatedVotes = { ...initialVotes };
@@ -1257,7 +1382,8 @@ function App() {
         candidates,
         positions,
         schoolInfo,
-        totalEligibleStudents
+        totalEligibleStudents,
+        electionStarted: false
       }).catch(() => {});
 
       alert('All votes have been reset successfully! Voting is now enabled.');
@@ -1317,6 +1443,10 @@ function App() {
           setResultsPublished(false);
           setTieBreakerResults({});
           setTotalEligibleStudents(DEFAULT_TOTAL_ELIGIBLE_STUDENTS);
+          setElectionStarted(false);
+          setStartCountdown(null);
+          setIsStartingElection(false);
+          setElectionStartMessage('');
 
           // Clear Firebase backup when all data is cleared
           saveBackupToFirebase({
@@ -1324,7 +1454,8 @@ function App() {
             votedStudents: [],
             electionCompleted: false,
             resultsPublished: false,
-            cleared: true
+            cleared: true,
+            electionStarted: false
           }).catch(() => {});
           
           alert('✅ All election data has been cleared and reset to defaults! Voting is now enabled.');
@@ -1835,9 +1966,16 @@ function App() {
           {currentView === 'login' && (
             <LoginModal 
               onLogin={handleStudentLogin} 
+              onStartElection={handleStartElection}
               onSecureExit={handleSecureExit}
               electionCompleted={electionCompleted}
               onViewResults={handleViewResultsFromLogin}
+              electionStarted={electionStarted}
+              isStartingElection={isStartingElection}
+              startCountdown={startCountdown}
+              electionStartMessage={electionStartMessage}
+              totalVotedStudents={votedStudents.length}
+              totalEligibleStudents={safeTotalEligibleStudents}
             />
           )}
           
@@ -2055,6 +2193,7 @@ function App() {
                 {passwordDialog.type === 'pause-voting' && '⏸️ Enter admin password to pause voting:'}
                 {passwordDialog.type === 'resume-voting' && '▶️ Enter admin password to resume voting:'}
                 {passwordDialog.type === 'complete-voting-status' && '✅ Enter admin password to complete voting:'}
+                {passwordDialog.type === 'start-election' && '🚀 Enter admin password to start election:'}
               </p>
               <input
                 type="password"

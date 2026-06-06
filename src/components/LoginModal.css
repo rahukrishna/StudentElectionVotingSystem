@@ -107,6 +107,72 @@
   transform: translateY(0);
 }
 
+.login-button:disabled {
+  background: linear-gradient(135deg, #b0bec5, #cfd8dc);
+  color: #546e7a;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.start-election-panel {
+  margin: 0.5rem 0 1rem;
+}
+
+.start-election-button {
+  background: linear-gradient(135deg, #00a86b, #27ae60);
+  color: white;
+  border: none;
+  padding: 1rem 1.8rem;
+  border-radius: 12px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  width: 100%;
+}
+
+.start-election-button:hover {
+  background: linear-gradient(135deg, #00965f, #229954);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
+}
+
+.start-election-button:disabled {
+  background: linear-gradient(135deg, #80cbc4, #a5d6a7);
+  color: #1b5e20;
+  cursor: wait;
+  transform: none;
+  box-shadow: none;
+}
+
+.start-election-hint {
+  margin: 0.65rem 0 0;
+  color: #1565c0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.election-started-message {
+  margin: 0.5rem 0 1rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+.voting-closed-message {
+  margin: 0.5rem 0 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  background: #ffebee;
+  border: 1px solid #ef9a9a;
+  color: #c62828;
+  font-weight: 700;
+}
+
 .login-warning-note {
   background: #fff3cd;
   border: 1px solid #ffe69c;

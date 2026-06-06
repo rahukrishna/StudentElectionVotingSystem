@@ -1,11 +1,26 @@
 import React from 'react';
 import './LoginModal.css';
 
-const LoginModal = ({ onLogin, onSecureExit, electionCompleted, onViewResults }) => {
+const LoginModal = ({
+  onLogin,
+  onStartElection,
+  onSecureExit,
+  electionCompleted,
+  onViewResults,
+  electionStarted,
+  isStartingElection,
+  startCountdown,
+  electionStartMessage,
+  totalVotedStudents,
+  totalEligibleStudents
+}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onLogin();
   };
+
+  const votingClosedByLimit = totalVotedStudents >= totalEligibleStudents;
+  const showStartElectionButton = !electionStarted && totalVotedStudents === 0;
 
   return (
     <div className="login-modal">
@@ -37,14 +52,46 @@ const LoginModal = ({ onLogin, onSecureExit, electionCompleted, onViewResults })
         ) : (
           <>
             <h2>🗳️ Student Login</h2>
-            <p>Click continue to start voting.</p>
+            <p>
+              {showStartElectionButton
+                ? 'Start the election first, then allow students to vote.'
+                : 'Click continue to start voting.'}
+            </p>
             <div className="login-warning-note">
               ⚠️ Do not close or refresh the browser until election voting is completed. Closing early may cause data loss.
             </div>
+
+            {showStartElectionButton && (
+              <div className="start-election-panel">
+                <button
+                  type="button"
+                  className="start-election-button"
+                  onClick={onStartElection}
+                  disabled={isStartingElection}
+                >
+                  {isStartingElection && startCountdown
+                    ? `Starting in ${startCountdown}...`
+                    : '🚀 Start Election'}
+                </button>
+                {isStartingElection && <p className="start-election-hint">Preparing secure voting session...</p>}
+              </div>
+            )}
+
+            {electionStartMessage && <p className="election-started-message">✅ {electionStartMessage}</p>}
+
+            {votingClosedByLimit && (
+              <div className="voting-closed-message">
+                🏁 All students have voted. Voting is now closed.
+              </div>
+            )}
             
             <form onSubmit={handleSubmit} className="login-form">
-              <button type="submit" className="login-button large">
-                Continue to Vote
+              <button
+                type="submit"
+                className="login-button large"
+                disabled={showStartElectionButton || isStartingElection || votingClosedByLimit}
+              >
+                {votingClosedByLimit ? 'Voting Closed' : 'Continue to Vote'}
               </button>
             </form>
 
